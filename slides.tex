@@ -1,0 +1,37 @@
+\documentclass[aspectratio=169]{beamer}
+\usetheme{Boadilla}
+\useoutertheme{infolines}
+\setbeamertemplate{navigation symbols}{}
+
+\usepackage{fontspec}
+\usepackage{unicode-math}
+\usepackage[Latin,Greek]{ucharclasses}
+\usepackage{amsmath}
+\usepackage{proof}
+\usepackage{minted}
+\AtBeginEnvironment{minted}{%
+  \renewcommand{\fcolorbox}[4][]{#4}}
+\usepackage[backend=biber]{biblatex}
+\addbibresource{references.bib}
+
+\title{Codebruijn: Everybody's Got To Be Somewhere
+  $^{\text{\cite{codebruijn}}}$}
+\institute[Uni Freiburg]{Chair of Programming Languages, University of
+  Freiburg}
+\author{Marius Weidner}
+\begin{document}
+
+\begin{frame}
+  \titlepage
+\end{frame}
+
+\begin{frame}{Outline}
+  \tableofcontents
+\end{frame}
+
+\begin{frame}[fragile]
+  \frametitle{References}
+  \printbibliography
+\end{frame}
+
+\end{document}
