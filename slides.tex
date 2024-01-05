@@ -8,9 +8,6 @@
 \usepackage[Latin,Greek]{ucharclasses}
 \usepackage{amsmath}
 \usepackage{proof}
-\usepackage{minted}
-\AtBeginEnvironment{minted}{%
-  \renewcommand{\fcolorbox}[4][]{#4}}
 \usepackage[backend=biber]{biblatex}
 \addbibresource{references.bib}
 
@@ -22,7 +19,7 @@
 \begin{document}
 
 \begin{frame}
-  \titlepage
+  \titlepage{}
 \end{frame}
 
 \begin{frame}{Outline}
@@ -31,7 +28,7 @@
 
 \begin{frame}[fragile]
   \frametitle{References}
-  \printbibliography
+  \printbibliography{}
 \end{frame}
 
 \end{document}
