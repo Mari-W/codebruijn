@@ -50,7 +50,7 @@
     Let $Δ_+^X$ be the category of scopes.
     \begin{itemize}
       \item Objects: $\bar{x} ∈ |Δ_+^X| = X^*$
-      \item Morphisms: $f ∈ Δ_+^X(\bar{x}, \bar{y})$ for $\bar{x}, \bar{y} ∈ |Δ_+^X|$ are inductively defined:
+      \item Morphisms: $f ∈ Δ_+^X(\bar{x}, \bar{y})$ for $\bar{x}, \bar{y} ∈ X^*$ are inductively defined:
     \end{itemize}
     \begin{columns}
       \begin{column}{0.04\textwidth}
@@ -257,14 +257,13 @@
 \begin{frame}[fragile]
   \frametitle{Lifting Scope Indexed Terms using Composition in $Δ_+^⊤$}
   \begin{lemma}
-    Given an intrinsically scoped term $t ∈ Tm \ \bar{x}$ we can \emph{lift} $t$ to a $Tm \ \ba
-    r{y}$,
+    Given an intrinsically scoped term $t ∈ Tm \ \bar{x}$ we can \emph{lift} $t$ to a $Tm \ \bar{y}$,
     if there exists a morphism $\bar{x} ⊑ \bar{y} ∈ Δ_+^⊤(\bar{x}, \bar{y})$, 
     i.e. $\bar{x}$ is a subscope of $\bar{y}$.
   \end{lemma}
   \begin{proof}
     $\_↑\_ \ \ \ \ \ \ \ \ \ \ \ \ \ \  : \ Tm \ \bar{x} → \bar{x} ⊑ \bar{y} → Tm \ \bar{y}$\\
-    $(Var \ v) \ \ \ \ \, ↑ f \ = \ Var \ (i ; f )$\\<
+    $(Var \ v) \ \ \ \ \, ↑ f \ = \ Var \ (i ; f )$\\
     $(App \ t₁ \ t₂) ↑ f \ = \ App \ (t₁ ↑ f) \ (t₂ ↑ f)$\\
     $(Abs \ t) \ \ \ \ \ ↑ f  \ = \ Abs \ (t ↑ S f)$
   \end{proof}
@@ -273,16 +272,16 @@
 
 \section{Going Further: Stronger Intrinsic Invariants over Scopes and Binders}
 \subsection{The Slice Category of Subscopes}
+
 \begin{frame}[fragile]
   \frametitle{The Slice Category of Subscopes: $Δ_+^X∖\bar{s}$}
   \begin{definition}
     \begin{columns}
-      
       \begin{column}{0.68\textwidth}
-        Let $Δ_+^X∖\bar{s}$ be the category of subscopes for a given $\bar{s} ∈ |Δ_+^X|$. 
+        Let $Δ_+^X∖\bar{s}$ be the category of subscopes for a given $\bar{s} ∈ X^*$. 
         \begin{itemize}
-          \item Objects: $(\bar{x}, f) ∈ |Δ_+^X∖\bar{s}| = \left( |Δ_+^X| \times Δ_+^X(\bar{x}, \bar{s}) \right)$
-          \item Morphisms: $h ∈ [Δ_+^X∖\bar{s}]((\bar{x}, f), (\bar {y}, g))$ such that $f = h;g$ 
+          \item Objects: $(\bar{x}, f) ∈ |Δ_+^X∖\bar{s}| = \left( X^* × Δ_+^X(\bar{x}, \bar{s}) \right)$
+          \item Morphisms: $h ∈ [Δ_+^X∖\bar{s}]((\bar{x}, f), (\bar{y}, g))$ such that $f = h;g$ 
         \end{itemize}
       \end{column}
       \begin{column}{0.3\textwidth}
@@ -345,10 +344,57 @@
   \end{example}
 \end{frame}
 
+\subsection{A Monad Over Sets Indexed by Scopes}
+
+\begin{frame}[fragile]
+  \frametitle{Category of Sets Indexed by Scopes}
+  \begin{definition}
+    Let $Set_X$ be the category of sets indexed by scopes $\bar{x} ∈ X^*$.
+    \begin{itemize}
+      \item Objects: $T, S ∈ |Set_X| = X^* → Set = \bar{X}$
+      \item Morphisms: $f_⋅ ∈ Set_X(T, S) = ∀ \{\bar{x}∈X^*\} → T \ \bar{x} → S \ \bar{x} = T \stackrel{⋅}{→} S$
+    \end{itemize}
+  \end{definition}
+  \begin{definition}
+    Let $Ref : \bar{X} → \bar{X}$ be the endofunctor induced by the mapping
+    \begin{itemize}
+      \item $Ref(T) = \bar{x} \mapsto (T \ \bar{s} , \bar{s} ⊑ \bar{x}) ∈ X^* → Set$
+      \item{$Ref(f_⋅) = (t, h) \mapsto (f_⋅ \ t , h) ∈ T \stackrel{⋅}{→} S$}
+    \end{itemize}
+  \end{definition}
+  \begin{remark}
+    The Functor $Ref$ packs a set $T ∈ \bar{X}$ indexed by $\bar{x} ∈ X^*$ together with a selection $h ∈ Δ_+^X∖\bar{x}$ of the variables that $T$ actually uses.
+  \end{remark}
+\end{frame}
+
+
+\begin{frame}[fragile]
+  \frametitle{Refining Things to only their Subscipe using the $Ref$ Functor}
+  \begin{example}
+    \adjustbox{scale=1.05}{    
+      \begin{tikzcd}
+        & {} \arrow[rrrr, "Ref", dashed, bend left] &   &  &                                                                                & {} &   \\
+        Tm  \arrow[rr, "f_⋅"] & {} \arrow[r] & T &  & {\bar{x} \mapsto (Tm \ \bar{s}, \bar{s} ⊑ \bar{x})} \arrow[rr, "{(tm, h) \mapsto (f_⋅ \ tm, h)}"] &    & {\bar{x} \mapsto (T \ \bar{s}, \bar{s} ⊑ \bar{x})}
+      \end{tikzcd}
+    }
+  \end{example}
+\end{frame}
+
+\begin{frame}[fragile]
+  \frametitle{$Ref$ is actually a Monad!}
+  \begin{corollary}
+    The functor $Ref : \bar{X} → \bar{X}$ gives rise to a monad, i.e. we define two natural transformations
+    \begin{itemize}
+      \item $unit : T \stackrel{⋅}{→} Ref(T) = t \mapsto (t, id)$ 
+      \item $mult : Ref(Ref(T)) \stackrel{⋅}{→} Ref(T) = ((t, h₁) h₂) \mapsto (t, h₁;h₂)$
+    \end{itemize}
+  \end{corollary}
+  \begin{example}
+  \end{example}
+\end{frame}
+
 \subsection{The Coproduct Category of Subscopes}
 
-
-\subsection{A Monad Over Sets Indexed by Scopes}
 \subsection{Monoidal Structure of Scopes}
 \subsection{Intrinsically Scopes co-Debruijn Syntaxes}
 \section{Wrapping Up: What I've (Not) Told You}
