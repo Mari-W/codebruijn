@@ -10,12 +10,27 @@
 \usepackage{proof}
 \usepackage[backend=biber]{biblatex}
 \addbibresource{references.bib}
+\usepackage{tikz}
+\usetikzlibrary{cd}
+\usepackage{adjustbox}
 
-\title{Codebruijn: Everybody's Got To Be Somewhere
-  $^{\text{\cite{codebruijn}}}$}
+\makeatletter
+\def\th@remarkstyle{
+    \normalfont
+    \setbeamercolor{block title example}{bg=orange!40,fg=orange}
+    \setbeamercolor{block body example}{bg=orange!20,fg=black}
+    \def\inserttheoremblockenv{exampleblock}
+  }
+\makeatother
+\theoremstyle{remarkstyle}
+\newtheorem*{remark}{Remark}
+
+\title{Co-Debruijn: Everybody's Got To Be Somewhere$^{\text{\cite{codebruijn}}}$}
+\subtitle{From Debruijn to co-Debruijn using Category Theory}
 \institute[Uni Freiburg]{Chair of Programming Languages, University of
   Freiburg}
 \author{Marius Weidner}
+
 \begin{document}
 
 \begin{frame}
@@ -26,8 +41,323 @@
   \tableofcontents
 \end{frame}
 
+\section{Getting Started: Scopes and Binders Categorically}
+\subsection{The Category of Scopes}
+
+\begin{frame}[fragile]
+  \frametitle{The Category of Scopes: $Δ_+^X$}
+  \begin{definition}
+    Let $Δ_+^X$ be the category of scopes.
+    \begin{itemize}
+      \item Objects: $\bar{x} ∈ |Δ_+^X| = X^*$
+      \item Morphisms: $f ∈ Δ_+^X(\bar{x}, \bar{y})$ for $\bar{x}, \bar{y} ∈ |Δ_+^X|$ are inductively defined:
+    \end{itemize}
+    \begin{columns}
+      \begin{column}{0.04\textwidth}
+      \end{column}
+      \begin{column}{0.2\textwidth}
+        \begin{center}
+          \infer[·]{
+            ε ⊑ ε
+          }{}
+        \end{center}
+      \end{column}
+      \begin{column}{0.2\textwidth}
+        \begin{center}
+          \infer[1]{
+            \bar{x}x ⊑ \bar{y}x
+          }{
+            \bar{x} ⊑ \bar{y}
+          }
+        \end{center}
+      \end{column}
+      \begin{column}{0.2\textwidth}
+        \begin{center}
+          \infer[0]{
+            \bar{x} ⊑ \bar{y}y
+          }{
+            \bar{x} ⊑ \ \bar{y}
+          }
+        \end{center}
+      \end{column}
+      \begin{column}{0.3\textwidth}
+      \end{column}
+    \end{columns}
+  \end{definition}
+  \begin{remark}
+    Morphisms in $Δ_+^X$ can be represented by \emph{bit vectors} $\bar{b} ∈ \{0, 1\}^*$ with one bit per variable of the target scope telling whether it has been mapped to or skipped by the source scope.
+  \end{remark}
+\end{frame}
+
+\begin{frame}[fragile]
+  \frametitle{Objects \& Morphisms in $Δ_+^⊤$}
+  \begin{example}
+    Let $X = ⊤$ (where $⊤$ is the set with exactly one element $⟨⟩$).\\Thus, Objects $\bar{x} ∈ X^*$ represents numbers. 
+    \begin{columns}
+      \begin{column}{0.6\textwidth}
+        \begin{center}
+          \adjustbox{scale=0.6}{
+            \begin{tikzcd}
+              3 \arrow[rr, "10101"]  &         & 5 &   &   &   &   &   &   \\
+                                     &         &   &   &   &   &   &   &   \\
+              • \arrow[rr, no head]  &         & • &   &   &   &   &   & 1 \\
+                                     &         & ∘ &   &   &   &   & 0 &   \\
+              • \arrow[rr, no head]  &         & • &   &   &   & 1 &   &   \\
+                                     &         & ∘ &   &   & 0 &   &   &   \\
+              • \arrow[rr, no head]  &         & • &   & 1 &   &   &   &   \\
+                                     &         &   & · &   &   &   &   &  
+            \end{tikzcd}
+          }
+        \end{center}
+      \end{column}
+      \begin{column}{0.4\textwidth}
+        \begin{center}
+          \adjustbox{scale=1.3}{
+            \begin{tikzcd}
+              3 \arrow[d, "10101"', bend right] \arrow[d, dashed, bend left] \arrow[rd, dotted, bend left] \arrow[d, dashed, bend left=60] &    \\
+              5                                                                                                                             & {}
+            \end{tikzcd}
+          }
+        \end{center}
+      \end{column}
+    \end{columns}
+  \end{example}
+\end{frame}
+
+\begin{frame}[fragile]
+  \frametitle{Identity and Composition in $Δ_+^⊤$}
+  \begin{columns}
+    \begin{column}{0.20\textwidth}
+      \begin{example}
+        \begin{center}
+          \adjustbox{scale=0.8}{
+            \begin{tikzcd}
+              5 \arrow[rr, "id \ 5" = 11111]    &  & 5 \\
+                                    &  &   \\
+              • \arrow[rr, no head] &  & • \\
+              • \arrow[rr, no head] &  & • \\
+              • \arrow[rr, no head] &  & • \\
+              • \arrow[rr, no head] &  & • \\
+              • \arrow[rr, no head] &  & • 
+            \end{tikzcd}
+          }
+        \end{center}
+      \end{example}
+    \end{column}
+    \begin{column}{0.75\textwidth}
+      \begin{example}
+        \adjustbox{scale=0.8}{
+          \begin{tikzcd}
+            2 \arrow[rr, "101"]  &  & 3 &  & 3 \arrow[rr, "10101"]&  & 5 &  & 2 \arrow[rr, "10001"]   &  & 5 \\
+                                  &  &   &  &                       &  &   &  &                       &  &   \\
+            • \arrow[rr, no head] &  & • &  & • \arrow[rr, no head] &  & • &  & • \arrow[rr, no head] &  & • \\
+                                  &  &   &  &                       &  & ∘ &  &                       &  & ∘ \\
+                                  &  & ∘ & ; & • \arrow[rr, no head] &  & • & =  &                       &  & ∘ \\
+                                  &  &   &  &                       &  & ∘ &  &                       &  & ∘ \\
+            • \arrow[rr, no head] &  & • &  & • \arrow[rr, no head] &  & • &  & • \arrow[rr, no head] &  & •
+          \end{tikzcd}
+        }
+      \end{example}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\begin{frame}[fragile]
+  \begin{columns}
+    \begin{column}{0.35\textwidth}
+      \large{\color{blue} $Δ_+^X$ is in Fact a Category}
+      \begin{lemma}
+        \begin{small}
+          In $Δ_+^X$ every object $\bar{x} ∈ X^*$ has an identity morphism, 
+          i.e. we can construct an identity morphism for $\bar{x}$ using the inference rules.
+        \end{small}
+      \end{lemma}
+      \begin{proof}
+        \begin{small}
+        $id \ \ \ \ \ \ : \ (\bar{x} : X^*) → \bar{x} ⊑ \bar{x}$\\
+        $id \ ε \ \ \ = \ ·$\\
+        $id \ \bar{x} x \ = \ ($id $ \bar{x})1$
+        \end{small}
+      \end{proof}
+      \begin{corollary}
+        \begin{small}
+        $id-l \ \, : \ id ; f = f$ \\
+        $id-r \ : \ f;id = f$
+        \end{small}
+      \end{corollary}  
+    \end{column}
+    \begin{column}{0.6\textwidth}
+      \begin{lemma}
+        \begin{small}
+        In $Δ_+^X$ two morphisms $f : \bar{x} ⊑ \bar{y}$ and $g : \bar{y} ⊑ \bar{z}$ 
+        compose to a morphism $f;g : \bar{x} ⊑ \bar{z}$, 
+        i.e. we can construct a morphism $f;g$ from $f$ and $g$ using the inference rules.
+        \end{small}
+      \end{lemma}
+      \begin{proof}
+        \begin{small}
+        $\_;\_ \ \ \ \ \ \ : \ \bar{x} ⊑ \bar{y} → \bar{y} ⊑ \bar{z} → \bar{x} ⊑ \bar{z}$\\
+        $·  \ \ \, ; \ · \ \ \ \ = \ ·$\\
+        $f 1  \ ; \ g 1 \ = \ (f;g)1$\\
+        $f 0 \ ; \ g 1  \ = \ (f;g)0$\\
+        $f \ \ \, ; \ g 0 \ = \ (f;g)0$
+        \end{small}
+      \end{proof}
+      \begin{corollary}
+        \begin{small}
+        assoc \ \ \ \ : \ $f;(g;h) = (f;g);h$\\
+        antisym \ : \ $(f : \bar{x} ⊑ \bar{y}) → (g : \bar{y} ⊑ \bar{z}) → \bar{x} = \bar{y} \land f = g = $ id $\bar{x}$
+        \end{small}
+      \end{corollary}  
+    \end{column}
+  \end{columns}
+\end{frame}
+
+
+\subsection{Intrinsically Scoped Debruijn Syntaxes}
+
+\begin{frame}[fragile]
+  \frametitle{Intrinsically Scoped Debruijn Syntax via $Δ_+^⊤$}
+  \begin{definition}
+    Let $Tm : |Δ_+^⊤| → Set$ be inductively defined: \\
+    \begin{column}{0.3\textwidth}
+      \begin{center}
+        \infer[Var]{
+          Tm \ \bar{x}
+        }{
+          ⟨⟩ ⊑ \bar{x}
+        }
+      \end{center}
+    \end{column}
+    \begin{column}{0.3\textwidth}
+      \begin{center}
+        \infer[App]{
+          Tm \ \bar{x}
+        }{
+          Tm \ \bar{x} &  
+          Tm \ \bar{x}
+        }
+      \end{center}
+    \end{column}
+    \begin{column}{0.3\textwidth}
+      \begin{center}
+        \infer[Abs]{
+          Tm \ \bar{x}
+        }{
+          Tm \ \bar{x}⟨⟩
+        }
+      \end{center}
+    \end{column}
+  \end{definition}
+  \begin{example}
+    
+  \end{example}
+\end{frame}
+
+\begin{frame}[fragile]
+  \frametitle{Lifting Scope Indexed Terms using Composition in $Δ_+^⊤$}
+  \begin{lemma}
+    Given an intrinsically scoped term $t ∈ Tm \ \bar{x}$ we can \emph{lift} $t$ to a $Tm \ \ba
+    r{y}$,
+    if there exists a morphism $\bar{x} ⊑ \bar{y} ∈ Δ_+^⊤(\bar{x}, \bar{y})$, 
+    i.e. $\bar{x}$ is a subscope of $\bar{y}$.
+  \end{lemma}
+  \begin{proof}
+    $\_↑\_ \ \ \ \ \ \ \ \ \ \ \ \ \ \  : \ Tm \ \bar{x} → \bar{x} ⊑ \bar{y} → Tm \ \bar{y}$\\
+    $(Var \ v) \ \ \ \ \, ↑ f \ = \ Var \ (i ; f )$\\<
+    $(App \ t₁ \ t₂) ↑ f \ = \ App \ (t₁ ↑ f) \ (t₂ ↑ f)$\\
+    $(Abs \ t) \ \ \ \ \ ↑ f  \ = \ Abs \ (t ↑ S f)$
+  \end{proof}
+\end{frame}
+
+
+\section{Going Further: Stronger Intrinsic Invariants over Scopes and Binders}
+\subsection{The Slice Category of Subscopes}
+\begin{frame}[fragile]
+  \frametitle{The Slice Category of Subscopes: $Δ_+^X∖\bar{s}$}
+  \begin{definition}
+    \begin{columns}
+      
+      \begin{column}{0.68\textwidth}
+        Let $Δ_+^X∖\bar{s}$ be the category of subscopes for a given $\bar{s} ∈ |Δ_+^X|$. 
+        \begin{itemize}
+          \item Objects: $(\bar{x}, f) ∈ |Δ_+^X∖\bar{s}| = \left( |Δ_+^X| \times Δ_+^X(\bar{x}, \bar{s}) \right)$
+          \item Morphisms: $h ∈ [Δ_+^X∖\bar{s}]((\bar{x}, f), (\bar {y}, g))$ such that $f = h;g$ 
+        \end{itemize}
+      \end{column}
+      \begin{column}{0.3\textwidth}
+        \adjustbox{scale=1}{
+          \begin{tikzcd}
+            \bar{x} \arrow[rdd, "f"', dotted] \arrow[rr, "h"] &   & \bar{y} \arrow[ldd, "g", dotted] \\
+                                                        &   &                            \\
+                                                        & \bar{s} &                           
+          \end{tikzcd}
+        }
+      \end{column}
+    \end{columns}
+    
+  \end{definition}
+  \begin{remark}
+    Objects in $Δ_+^X∖\bar{s}$ can be represented by \emph{bit vectors} $\bar{b} ∈ \{0, 1\}^*$ with one bit per variable telling whether it has been selected.
+  \end{remark}
+\end{frame}
+
+\begin{frame}[fragile]
+  \frametitle{Objects \& Morphisms in $Δ_+^T∖5$}
+  \begin{example}
+    \begin{columns}
+      \begin{column}{0.3\textwidth}
+        \adjustbox{scale=1}{
+          \begin{tikzcd}
+            3 \arrow[rdd, "01110"', dotted] \arrow[rr, "0111"]  &   & 4 \arrow[ldd, "11110", dotted] \\
+                                                                &   &                                 \\
+                                                                & 5 &                                
+            \end{tikzcd}
+        }
+      \end{column}
+      \begin{column}{0.65\textwidth}
+        \adjustbox{scale=0.6}{
+          \begin{tikzcd}
+            3 \arrow[rr, "0111"]  &  & 4 &   & 4 \arrow[rr, "11110"] &  & 5 &  & 3 \arrow[rr, "01110"] &  & 5 \\
+                                  &  &   &   &                        &  &   &  &                        &  &   \\
+                                  &  & ∘ &   & • \arrow[rr, no head]  &  & • &  &                        &  & ∘ \\
+            • \arrow[rr, no head] &  & • &   & • \arrow[rr, no head]  &  & • &  & • \arrow[rr, no head]           &  & • \\
+            • \arrow[rr, no head] &  & • & ; & • \arrow[rr, no head]  &  & • & = & • \arrow[rr, no head]  & & • \\
+            • \arrow[rr, no head] &  & • &   & • \arrow[rr, no head]  &  & • &  & • \arrow[rr, no head]  &  & • \\
+                                  &  &   &   &                        &  & ∘ &  &                        &  & ∘
+            \end{tikzcd}
+        }
+      \end{column}
+    \end{columns}
+    Alternatively:
+    \begin{itemize}
+    \item \adjustbox{scale=1}{
+      \begin{tikzcd}
+        {(3, 01110)} \arrow[rr, "0111"] &  & {(4, 11110)}
+      \end{tikzcd}
+    }
+    \item \adjustbox{scale=1}{
+      \begin{tikzcd}
+        {01110} \arrow[rr, "0111"] &  & {11110}
+      \end{tikzcd}
+    }
+    \end{itemize}
+  \end{example}
+\end{frame}
+
+\subsection{The Coproduct Category of Subscopes}
+
+
+\subsection{A Monad Over Sets Indexed by Scopes}
+\subsection{Monoidal Structure of Scopes}
+\subsection{Intrinsically Scopes co-Debruijn Syntaxes}
+\section{Wrapping Up: What I've (Not) Told You}
+\subsection{This Is Actually an Agda Paper (!)}
+\subsection{Recapitulation}
+
 \begin{frame}[fragile]
   \frametitle{References}
+  \nocite{catsandtypes}
   \printbibliography{}
 \end{frame}
 
