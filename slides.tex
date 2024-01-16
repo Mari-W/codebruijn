@@ -217,7 +217,7 @@
 \end{frame}
 
 
-\subsection{Intrinsically Scoped Debruijn Syntaxes}
+\subsection{Intrinsically Scoped Debruijn Syntax}
 
 \begin{frame}[fragile]
   \frametitle{Intrinsically Scoped Debruijn Syntax via $Δ_+^⊤$}
@@ -285,7 +285,7 @@
       \begin{column}{0.68\textwidth}
         Let $Δ_+^X∖\bar{s}$ be the category of subscopes for a given $\bar{s} ∈ X^*$. 
         \begin{itemize}
-          \item Objects: $(\bar{x}, f) ∈ |Δ_+^X∖\bar{s}| = \left( X^* × Δ_+^X(\bar{x}, \bar{s}) \right)$
+          \item Objects: $(\bar{x}, f) ∈ |Δ_+^X∖\bar{s}| = \left(\bar{x} : X^* × Δ_+^X(\bar{x}, \bar{s}) \right)$
           \item Morphisms: $h ∈ [Δ_+^X∖\bar{s}]((\bar{x}, f), (\bar{y}, g))$ such that $f = h;g$ 
         \end{itemize}
       \end{column}
@@ -305,7 +305,7 @@
     The initial object of the $Δ_+^X∖\bar{s}$ category is the empty subscope $(ε, \bar{0})$. 
   \end{corollary}
   \begin{remark}
-    Objects in $Δ_+^X∖\bar{s}$ can be represented by \emph{bit vectors} $\bar{b} ∈ \{0, 1\}^*$ with one bit per variable telling whether it has been selected.
+    Objects in $Δ_+^X∖\bar{s}$ can be represented by \emph{bit vectors} $\bar{b} ∈ \{0, 1\}^*$ with one bit per variable of scope $\bar{s}$, telling whether it has been selected.
   \end{remark}
 \end{frame}
 
@@ -360,55 +360,61 @@
     Let $Set_X$ be the category of sets indexed by scopes $\bar{x} ∈ X^*$.
     \begin{itemize}
       \item Objects: $T, S ∈ |Set_X| = X^* → Set = \bar{X}$
-      \item Morphisms: $f_⋅ ∈ Set_X(T, S) = ∀ \{\bar{x}∈X^*\} → T \ \bar{x} → S \ \bar{x} = T \stackrel{⋅}{→} S$
+      \item Morphisms: $f_⋅ ∈ Set_X(T, S) = (\bar{x}∈X^*) → T \ \bar{x} → S \ \bar{x} = T \stackrel{⋅}{→} S$
     \end{itemize}
   \end{definition}
   \begin{definition}
-    Let $Ref : \bar{X} → \bar{X}$ be the endofunctor induced by the mapping
+    Let $Ref : Set_X → Set_X$ be the endofunctor induced by the mapping
     \begin{itemize}
-      \item $Ref(T) = \bar{x} ↦ (T \ \bar{s} , \bar{s} ⊑ \bar{x}) ∈ X^* → Set$
+      \item $Ref(T) = \bar{x} ↦ (T \ \bar{s} × \bar{s} ⊑ \bar{x}) ∈ X^* → Set$
       \item{$Ref(f_⋅) = (t, h) ↦ (f_⋅ \ t , h) ∈ T \stackrel{⋅}{→} S$}
     \end{itemize}
   \end{definition}
   \begin{remark}
-    The functor $Ref$ packs a set $T ∈ \bar{X}$ indexed by $\bar{x} ∈ X^*$ together with a selection $h ∈ Δ_+^X∖\bar{x}$ of the variables that $T$ actually uses.
+    The functor $Ref$ packs a set $T ∈ \bar{X}$ indexed by $\bar{x} ∈ X^*$ together with a selection $h ∈ Δ_+^X∖\bar{x}$ of the variables of $T$.
   \end{remark}
 \end{frame}
 
 
-\begin{frame}[fragile]
-  \frametitle{$Ref$ functor in action}
-  \begin{example}
-    \adjustbox{scale=1.05}{    
-      \begin{tikzcd}
-        & {} \arrow[rrrr, "Ref", dashed, bend left] &   &  &                                                                                & {} &   \\
-        Tm  \arrow[rr, "f_⋅"] & {} \arrow[r] & T &  & {\bar{x} ↦ (Tm \ \bar{s}, \bar{s} ⊑ \bar{x})} \arrow[rr, "{(tm, h) ↦ (f_⋅ \ tm, h)}"] &    & {\bar{x} ↦ (T \ \bar{s}, \bar{s} ⊑ \bar{x})}
-      \end{tikzcd}
-    }
-  \end{example}
-\end{frame}
+% \begin{frame}[fragile]
+%   \frametitle{$Ref$ by example}
+%   \begin{example}
+%     \adjustbox{scale=1.05}{    
+%       \begin{tikzcd}
+%         & {} \arrow[rrrr, "Ref", dashed, bend left] &   &  &                                                                                & {} &   \\
+%         Tm  \arrow[rr, "f_⋅"] & {} \arrow[r] & T &  & {\bar{x} ↦ (Tm \ \bar{s}, \bar{s} ⊑ \bar{x})} \arrow[rr, "{(tm, h) ↦ (f_⋅ \ tm, h)}"] &    & {\bar{x} ↦ (T \ \bar{s}, \bar{s} ⊑ \bar{x})}
+%       \end{tikzcd}
+%     }
+%   \end{example}
+% \end{frame}
 
 \begin{frame}[fragile]
   \frametitle{$Δ_+^X$ makes $Ref$ a Monad!}
   \begin{theorem}
-    The functor $Ref : \bar{X} → \bar{X}$ gives rise to a monad with the two natural transformations
+    The functor $Ref : Set_X → Set_X$ gives rise to a monad with the two natural transformations
     \begin{itemize}
-      \item $unit : T \stackrel{⋅}{→} Ref(T) = t ↦ (t, id)$ 
+      \item $unit : Id(T) \stackrel{⋅}{→} Ref(T) = t ↦ (t, id)$ 
       \item $mult : Ref(Ref(T)) \stackrel{⋅}{→} Ref(T) = ((t, h₁) h₂) ↦ (t, h₁;h₂)$
     \end{itemize}
   \end{theorem}
   \begin{example}
       \begin{tikzcd}
-        Tm \arrow[rr, "unit"] &  & \bar{x} ↦ (Tm \ \bar{x}, \bar{x} ⊑ \bar{x}) \arrow[lld, "Ref"'] \\
-        \bar{y} ↦ ([\bar{x} ↦ (Tm \ \bar{x}, \bar{x} ⊑ \bar{x})] \bar{s}, \bar{s} ⊑ \bar{y}) \arrow[rr, "mult"]  &  & \bar{y} ↦ (Tm \ \bar{s}, \bar{s} ⊑ \bar{y})                        
+        Tm \arrow[rr, "unit", dashed] &  & \bar{x} ↦ (Tm \ \bar{x}, \bar{x} ⊑ \bar{x}) \arrow[lld, "Ref"', dashed] \\
+        \bar{y} ↦ ([\bar{x} ↦ (Tm \ \bar{x}, \bar{x} ⊑ \bar{x})] \bar{s}, \bar{s} ⊑ \bar{y}) \arrow[rr, "mult", dashed]  &  & \bar{y} ↦ (Tm \ \bar{s}, \bar{s} ⊑ \bar{y})                        
       \end{tikzcd}
   \end{example}
 \end{frame}
 
-\subsection{The Coproduct Category of Subscopes}
+\subsection{Coproducts in the Category of Subscopes}
+
+
 
 \subsection{Monoidal Structure of Scopes}
-\subsection{Intrinsically Scopes co-Debruijn Syntaxes}
+\subsection{Intrinsically Scopes co-Debruijn Syntax}
+
+\subsection{Translating Debruijn Syntax to Codebruijn Syntax}
+
+
 \section{Wrapping Up: What I've (Not) Told You}
 \subsection{This Is Actually an Agda Paper (!)}
 \subsection{Recapitulation}
