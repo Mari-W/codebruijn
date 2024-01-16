@@ -49,7 +49,7 @@
   \begin{definition}
     Let $Δ_+^X$ be the category of scopes.
     \begin{itemize}
-      \item Objects: $\bar{x} ∈ |Δ_+^X| = X^*$
+      \item Objects: $\bar{x}, \bar{y}, \bar{s} ∈ |Δ_+^X| = X^*$
       \item Morphisms: $f ∈ Δ_+^X(\bar{x}, \bar{y})$ for $\bar{x}, \bar{y} ∈ X^*$ are inductively defined:
     \end{itemize}
     \begin{columns}
@@ -84,6 +84,9 @@
       \end{column}
     \end{columns}
   \end{definition}
+  \begin{corollary}
+    The initial object of the $Δ_+^X$ category is the empty scope $ε$ with the $\bar{0}$ as the unique morphism. 
+  \end{corollary}
   \begin{remark}
     Morphisms in $Δ_+^X$ can be represented by \emph{bit vectors} $\bar{b} ∈ \{0, 1\}^*$ with one bit per variable of the target scope telling whether it has been mapped to or skipped by the source scope.
   \end{remark}
@@ -220,34 +223,36 @@
   \frametitle{Intrinsically Scoped Debruijn Syntax via $Δ_+^⊤$}
   \begin{definition}
     Let $Tm : |Δ_+^⊤| → Set$ be inductively defined: \\
-    \begin{column}{0.3\textwidth}
-      \begin{center}
-        \infer[Var]{
-          Tm \ \bar{x}
-        }{
-          ⟨⟩ ⊑ \bar{x}
-        }
-      \end{center}
-    \end{column}
-    \begin{column}{0.3\textwidth}
-      \begin{center}
-        \infer[App]{
-          Tm \ \bar{x}
-        }{
-          Tm \ \bar{x} &  
-          Tm \ \bar{x}
-        }
-      \end{center}
-    \end{column}
-    \begin{column}{0.3\textwidth}
-      \begin{center}
-        \infer[Abs]{
-          Tm \ \bar{x}
-        }{
-          Tm \ \bar{x}⟨⟩
-        }
-      \end{center}
-    \end{column}
+    \begin{columns}
+      \begin{column}{0.3\textwidth}
+        \begin{center}
+          \infer[\#]{
+            Tm \ \bar{x}
+          }{
+            ⟨⟩ ⊑ \bar{x}
+          }
+        \end{center}
+      \end{column}
+      \begin{column}{0.3\textwidth}
+        \begin{center}
+          \infer[\$]{
+            Tm \ \bar{x}
+          }{
+            Tm \ \bar{x} &  
+            Tm \ \bar{x}
+          }
+        \end{center}
+      \end{column}
+      \begin{column}{0.3\textwidth}
+        \begin{center}
+          \infer[λ]{
+            Tm \ \bar{x}
+          }{
+            Tm \ \bar{x}⟨⟩
+          }
+        \end{center}
+      \end{column}
+    \end{columns}
   \end{definition}
   \begin{example}
     
@@ -262,10 +267,10 @@
     i.e. $\bar{x}$ is a subscope of $\bar{y}$.
   \end{lemma}
   \begin{proof}
-    $\_↑\_ \ \ \ \ \ \ \ \ \ \ \ \ \ \  : \ Tm \ \bar{x} → \bar{x} ⊑ \bar{y} → Tm \ \bar{y}$\\
-    $(Var \ v) \ \ \ \ \, ↑ f \ = \ Var \ (i ; f )$\\
-    $(App \ t₁ \ t₂) ↑ f \ = \ App \ (t₁ ↑ f) \ (t₂ ↑ f)$\\
-    $(Abs \ t) \ \ \ \ \ ↑ f  \ = \ Abs \ (t ↑ S f)$
+    $\_↑\_ \ \ \ \ \ \ \ \ \ \ \,  : \ Tm \ \bar{x} → \bar{x} ⊑ \bar{y} → Tm \ \bar{y}$\\
+    $(\# \ v) \ \ \  \, ↑ f \ = \ \# \ (v ; f)$\\
+    $(t₁ \ \$ \ t₂) ↑ f \ = \ (t₁ ↑ f) \ \$ \ (t₂ ↑ f)$\\
+    $(λ \ t) \ \ \ \ \, ↑ f  \ = \ λ \ (t ↑ S f)$
   \end{proof}
 \end{frame}
 
@@ -296,6 +301,9 @@
     \end{columns}
     
   \end{definition}
+  \begin{corollary}
+    The initial object of the $Δ_+^X∖\bar{s}$ category is the empty subscope $(ε, \bar{0})$. 
+  \end{corollary}
   \begin{remark}
     Objects in $Δ_+^X∖\bar{s}$ can be represented by \emph{bit vectors} $\bar{b} ∈ \{0, 1\}^*$ with one bit per variable telling whether it has been selected.
   \end{remark}
@@ -358,38 +366,42 @@
   \begin{definition}
     Let $Ref : \bar{X} → \bar{X}$ be the endofunctor induced by the mapping
     \begin{itemize}
-      \item $Ref(T) = \bar{x} \mapsto (T \ \bar{s} , \bar{s} ⊑ \bar{x}) ∈ X^* → Set$
-      \item{$Ref(f_⋅) = (t, h) \mapsto (f_⋅ \ t , h) ∈ T \stackrel{⋅}{→} S$}
+      \item $Ref(T) = \bar{x} ↦ (T \ \bar{s} , \bar{s} ⊑ \bar{x}) ∈ X^* → Set$
+      \item{$Ref(f_⋅) = (t, h) ↦ (f_⋅ \ t , h) ∈ T \stackrel{⋅}{→} S$}
     \end{itemize}
   \end{definition}
   \begin{remark}
-    The Functor $Ref$ packs a set $T ∈ \bar{X}$ indexed by $\bar{x} ∈ X^*$ together with a selection $h ∈ Δ_+^X∖\bar{x}$ of the variables that $T$ actually uses.
+    The functor $Ref$ packs a set $T ∈ \bar{X}$ indexed by $\bar{x} ∈ X^*$ together with a selection $h ∈ Δ_+^X∖\bar{x}$ of the variables that $T$ actually uses.
   \end{remark}
 \end{frame}
 
 
 \begin{frame}[fragile]
-  \frametitle{Refining Things to only their Subscipe using the $Ref$ Functor}
+  \frametitle{$Ref$ functor in action}
   \begin{example}
     \adjustbox{scale=1.05}{    
       \begin{tikzcd}
         & {} \arrow[rrrr, "Ref", dashed, bend left] &   &  &                                                                                & {} &   \\
-        Tm  \arrow[rr, "f_⋅"] & {} \arrow[r] & T &  & {\bar{x} \mapsto (Tm \ \bar{s}, \bar{s} ⊑ \bar{x})} \arrow[rr, "{(tm, h) \mapsto (f_⋅ \ tm, h)}"] &    & {\bar{x} \mapsto (T \ \bar{s}, \bar{s} ⊑ \bar{x})}
+        Tm  \arrow[rr, "f_⋅"] & {} \arrow[r] & T &  & {\bar{x} ↦ (Tm \ \bar{s}, \bar{s} ⊑ \bar{x})} \arrow[rr, "{(tm, h) ↦ (f_⋅ \ tm, h)}"] &    & {\bar{x} ↦ (T \ \bar{s}, \bar{s} ⊑ \bar{x})}
       \end{tikzcd}
     }
   \end{example}
 \end{frame}
 
 \begin{frame}[fragile]
-  \frametitle{$Ref$ is actually a Monad!}
-  \begin{corollary}
-    The functor $Ref : \bar{X} → \bar{X}$ gives rise to a monad, i.e. we define two natural transformations
+  \frametitle{$Δ_+^X$ makes $Ref$ a Monad!}
+  \begin{theorem}
+    The functor $Ref : \bar{X} → \bar{X}$ gives rise to a monad with the two natural transformations
     \begin{itemize}
-      \item $unit : T \stackrel{⋅}{→} Ref(T) = t \mapsto (t, id)$ 
-      \item $mult : Ref(Ref(T)) \stackrel{⋅}{→} Ref(T) = ((t, h₁) h₂) \mapsto (t, h₁;h₂)$
+      \item $unit : T \stackrel{⋅}{→} Ref(T) = t ↦ (t, id)$ 
+      \item $mult : Ref(Ref(T)) \stackrel{⋅}{→} Ref(T) = ((t, h₁) h₂) ↦ (t, h₁;h₂)$
     \end{itemize}
-  \end{corollary}
+  \end{theorem}
   \begin{example}
+      \begin{tikzcd}
+        Tm \arrow[rr, "unit"] &  & \bar{x} ↦ (Tm \ \bar{x}, \bar{x} ⊑ \bar{x}) \arrow[lld, "Ref"'] \\
+        \bar{y} ↦ ([\bar{x} ↦ (Tm \ \bar{x}, \bar{x} ⊑ \bar{x})] \bar{s}, \bar{s} ⊑ \bar{y}) \arrow[rr, "mult"]  &  & \bar{y} ↦ (Tm \ \bar{s}, \bar{s} ⊑ \bar{y})                        
+      \end{tikzcd}
   \end{example}
 \end{frame}
 
