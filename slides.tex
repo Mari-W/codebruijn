@@ -352,6 +352,33 @@
   \end{example}
 \end{frame}
 
+\begin{frame}[fragile]
+  \frametitle{Coproducts in $Δ_+^X∖\bar{s}$}
+  \begin{theorem}
+    Objects in the slice category $\bar{b}₁, \bar{b}₂ ∈ Δ_+^X∖\bar{s}$ have a coproduct object $\bar{b}₁ + \bar{b}₂$ if there exist morphisms $l ∈ [Δ_+^X∖\bar{s}](\bar{b}₁, \bar{b}₁ + \bar{b}₂)$ and $r ∈ [Δ_+^X∖\bar{s}](\bar{b}₂, \bar{b}₁ + \bar{b}₂)$. Then for every $f ∈ [Δ_+^X∖\bar{s}](\bar{b}₁, \bar{b}_3)$ and $g ∈ [Δ_+^X∖\bar{s}](\bar{b}₂, \bar{b}_3)$, there exists a unqiue $h ∈ [Δ_+^X∖\bar{s}](\bar{b}₁ + \bar{b}₂, \bar{b}_3)$ such that $f = l;h$ and $g = r;h$.
+  \end{theorem}
+  \begin{columns}
+    \begin{column}{0.5\textwidth}
+      \begin{example}
+          \adjustbox{scale=0.76}{
+            \begin{tikzcd}
+              01100 \arrow[rrrrrd, "0110"] \arrow[rrd, "011"'] &  &                           &  &  &       \\
+                                                               &  & 11100 \arrow[rrr, "1110"] &  &  & 11110 \\
+              11000 \arrow[rrrrru, "1100"'] \arrow[rru, "110"] &  &                           &  &  &      
+              \end{tikzcd}
+          }
+      \end{example}
+    \end{column}
+    \begin{column}{0.46\textwidth}
+      \begin{remark}
+        The coproduct $\bar{b}₁ + \bar{b}₂$ of two subscopes $\bar{b}₁, \bar{b₂}$ 
+        corresponds to the minimal subscope covering both $\bar{b}₁$ and $\bar{b₂}$. 
+        The coproduct $\bar{b}₁ + \bar{b}₂$ can be computed by pointswise disjunction of $\bar{b}₁$ and $\bar{b}₂$. 
+      \end{remark}
+    \end{column}
+  \end{columns}
+\end{frame}
+
 \subsection{A Monad Over Sets Indexed by Scopes}
 
 \begin{frame}[fragile]
@@ -405,9 +432,9 @@
   \end{example}
 \end{frame}
 
-\subsection{Coproducts in the Category of Subscopes}
-
-
+\begin{frame}[fragile]
+  \frametitle{The Notion of Relevant Pairs}
+\end{frame}
 
 \subsection{Monoidal Structure of Scopes}
 \subsection{Intrinsically Scopes co-Debruijn Syntax}
