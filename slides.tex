@@ -387,18 +387,19 @@
     Let $Set_X$ be the category of sets indexed by scopes $\bar{x} ∈ X^*$.
     \begin{itemize}
       \item Objects: $T, S ∈ |Set_X| = X^* → Set = \bar{X}$
-      \item Morphisms: $f_⋅ ∈ Set_X(T, S) = (\bar{x}∈X^*) → T \ \bar{x} → S \ \bar{x} = T \stackrel{⋅}{→} S$
+      \item Morphisms: $f_⋅ ∈ Set_X(T, S) = (\bar{x}∈X^*) → T(\bar{x}) → S(\bar{x}) = T \stackrel{⋅}{→} S$
     \end{itemize}
   \end{definition}
   \begin{definition}
-    Let $Ref : Set_X → Set_X$ be the endofunctor induced by the mapping
+    Let $\_⇑\_ = (T : \bar{X}), (\bar{x} : X^*) ↦ (T(\bar{s}) × \bar{s} ⊑ \bar{x})$.\\
+    We define $Ref : Set_X \stackrel{⋅}{→} Set_X$ to be the endofunctor induced by the mapping
     \begin{itemize}
-      \item $Ref(T) = \bar{x} ↦ (T \ \bar{s} × \bar{s} ⊑ \bar{x}) ∈ X^* → Set$
-      \item{$Ref(f_⋅) = (t, h) ↦ (f_⋅ \ t , h) ∈ T \stackrel{⋅}{→} S$}
+      \item $Ref(T) = \bar{x} ↦ T ⇑ \bar{x} ∈ \bar{X}$
+      \item{$Ref(f_⋅) = (t, h) ↦ (f_⋅(t) , h) ∈ T \stackrel{⋅}{→} S$}
     \end{itemize}
   \end{definition}
   \begin{remark}
-    The functor $Ref$ packs a set $T ∈ \bar{X}$ indexed by $\bar{x} ∈ X^*$ together with a selection $h ∈ Δ_+^X∖\bar{x}$ of the variables of $T$.
+    The set $T⇑\bar{x}$ packs an set $T ∈ \bar{X}$ indexed by $\bar{x} ∈ X^*$ applied to a subscope $\bar{s}$ of $\bar{x}$, together with a selection $h ∈ |Δ_+^X∖\bar{x}|$ of the variables of $T$.
   \end{remark}
 \end{frame}
 
@@ -434,6 +435,9 @@
 
 \begin{frame}[fragile]
   \frametitle{The Notion of Relevant Pairs}
+  \begin{definition}
+    Let $\_×_R\_ = (T : \bar{X}), (S : \bar{X}), (\bar{x} : X^*) ↦ (T ⇑ \bar{x} × S ⇑ \bar{x}) × ?$.\\
+  \end{definition}
 \end{frame}
 
 \subsection{Monoidal Structure of Scopes}
