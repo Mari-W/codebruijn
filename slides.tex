@@ -50,7 +50,7 @@
     Let $Δ_+^X$ be the category of scopes.
     \begin{itemize}
       \item Objects: $\bar{x}, \bar{y}, \bar{s} ∈ |Δ_+^X| = X^*$
-      \item Morphisms: $f ∈ Δ_+^X(\bar{x}, \bar{y})$ for $\bar{x}, \bar{y} ∈ X^*$ are inductively defined:
+      \item Morphisms: $f, g ∈ Δ_+^X(\bar{x}, \bar{y})$ for $\bar{x}, \bar{y} ∈ X^*$ are inductively defined:
     \end{itemize}
     \begin{columns}
       \begin{column}{0.04\textwidth}
@@ -285,7 +285,7 @@
       \begin{column}{0.68\textwidth}
         Let $Δ_+^X∖\bar{s}$ be the category of subscopes for a given $\bar{s} ∈ X^*$. 
         \begin{itemize}
-          \item Objects: $(\bar{x}, f) ∈ |Δ_+^X∖\bar{s}| = \left(\bar{x} : X^* × Δ_+^X(\bar{x}, \bar{s}) \right)$
+          \item Objects: $\bar{b}, (\bar{x}, f) ∈ |Δ_+^X∖\bar{s}| = \left(\bar{x} : X^* × Δ_+^X(\bar{x}, \bar{s}) \right)$
           \item Morphisms: $h ∈ [Δ_+^X∖\bar{s}]((\bar{x}, f), (\bar{y}, g))$ such that $f = h;g$ 
         \end{itemize}
       \end{column}
@@ -355,7 +355,7 @@
 \begin{frame}[fragile]
   \frametitle{Coproducts in $Δ_+^X∖\bar{s}$}
   \begin{theorem}
-    Objects in the slice category $\bar{b}₁, \bar{b}₂ ∈ Δ_+^X∖\bar{s}$ have a coproduct object $\bar{b}₁ + \bar{b}₂$ if there exist morphisms $l ∈ [Δ_+^X∖\bar{s}](\bar{b}₁, \bar{b}₁ + \bar{b}₂)$ and $r ∈ [Δ_+^X∖\bar{s}](\bar{b}₂, \bar{b}₁ + \bar{b}₂)$. Then for every $f ∈ [Δ_+^X∖\bar{s}](\bar{b}₁, \bar{b}_3)$ and $g ∈ [Δ_+^X∖\bar{s}](\bar{b}₂, \bar{b}_3)$, there exists a unqiue $h ∈ [Δ_+^X∖\bar{s}](\bar{b}₁ + \bar{b}₂, \bar{b}_3)$ such that $f = l;h$ and $g = r;h$.
+    Objects in the slice category $\bar{b}₁, \bar{b}₂ ∈ |Δ_+^X∖\bar{s}|$ have a coproduct object $\bar{b}₁ + \bar{b}₂$ if there exist morphisms $l ∈ [Δ_+^X∖\bar{s}](\bar{b}₁, \bar{b}₁ + \bar{b}₂)$ and $r ∈ [Δ_+^X∖\bar{s}](\bar{b}₂, \bar{b}₁ + \bar{b}₂)$. Then for every $f ∈ [Δ_+^X∖\bar{s}](\bar{b}₁, \bar{b}_3)$ and $g ∈ [Δ_+^X∖\bar{s}](\bar{b}₂, \bar{b}_3)$, there exists a unqiue $h ∈ [Δ_+^X∖\bar{s}](\bar{b}₁ + \bar{b}₂, \bar{b}_3)$ such that $f = l;h$ and $g = r;h$.
   \end{theorem}
   \begin{columns}
     \begin{column}{0.5\textwidth}
@@ -391,7 +391,7 @@
     \end{itemize}
   \end{definition}
   \begin{definition}
-    Let $\_⇑\_ = (T : \bar{X}), (\bar{x} : X^*) ↦ (T(\bar{s}) × \bar{s} ⊑ \bar{x})$.\\
+    Let $\_⇑\_ : \bar{X} → \bar{X} = (T, \bar{x}) ↦ (T(\bar{s}) × \bar{s} ⊑ \bar{x})$.\\
     We define $Ref : Set_X \stackrel{⋅}{→} Set_X$ to be the endofunctor induced by the mapping
     \begin{itemize}
       \item $Ref(T) = \bar{x} ↦ T ⇑ \bar{x} ∈ \bar{X}$
@@ -436,11 +436,16 @@
 \begin{frame}[fragile]
   \frametitle{The Notion of Relevant Pairs}
   \begin{definition}
-    Let $\_×_R\_ = (T : \bar{X}), (S : \bar{X}), (\bar{x} : X^*) ↦ (T ⇑ \bar{x} × S ⇑ \bar{x}) × ?$.\\
+    Let $\_×_R\_ : \bar{X} → \bar{X} → \bar{X}  = (T, S, \bar{x}) ↦ ((\_, \bar{b}₁ : T ⇑ \bar{x}) × (\_, \bar{b}₂ : S ⇑ \bar{x}) × (???))$. \\ We write $\_,_R\_ : T ⇑ \bar{x} → S ⇑ \bar{x} → T ×_R S = (T, S) ↦  ... , ... , $ \\
+
   \end{definition}
 \end{frame}
 
 \subsection{Monoidal Structure of Scopes}
+A, B : Set 
+((a : A) x B a) : Set
+X : Set
+List X -> Set
 \subsection{Intrinsically Scopes co-Debruijn Syntax}
 
 \subsection{Translating Debruijn Syntax to Codebruijn Syntax}
