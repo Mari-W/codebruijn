@@ -436,16 +436,17 @@
 \begin{frame}[fragile]
   \frametitle{The Notion of Relevant Pairs}
   \begin{definition}
-    Let $\_×_R\_ : \bar{X} → \bar{X} → \bar{X}  = (T, S, \bar{x}) ↦ ((\_, \bar{b}₁ : T ⇑ \bar{x}) × (\_, \bar{b}₂ : S ⇑ \bar{x}) × (???))$. \\ We write $\_,_R\_ : T ⇑ \bar{x} → S ⇑ \bar{x} → T ×_R S = (T, S) ↦  ... , ... , $ \\
-
+    Let $\_×_R\_ : \bar{X} → \bar{X} → \bar{X}  = (T, S, \bar{x}) ↦ ((\_, \bar{b}₁ : T ⇑ \bar{x}) × (\_, \bar{b}₂ : S ⇑ \bar{x}) × ∃\bar{b}(\bar{b} ≡ \bar{b}₁ + \bar{b}₂))$. \\ We write $\_,_R\_ : T ⇑ \bar{x} → S ⇑ \bar{x} → (T ×_R S) ⇑ \bar{x} = ((\_, \bar{b}₁), (\_, \bar{b}₂)) ↦  (L(\bar{b}₁+\bar{b}₂) , R(\bar{b}₁+\bar{b}₂) , \bar{b}₁+\bar{b}₂)$ to construct a $T×_R S$. \\
   \end{definition}
+  \begin{example}
+    We'll look at $Tm$
+
+    Let $.. #1 .. #2 .. : Tm 5$
+  \end{example}
 \end{frame}
 
 \subsection{Monoidal Structure of Scopes}
-A, B : Set 
-((a : A) x B a) : Set
-X : Set
-List X -> Set
+
 \subsection{Intrinsically Scopes co-Debruijn Syntax}
 
 \subsection{Translating Debruijn Syntax to Codebruijn Syntax}
@@ -453,7 +454,7 @@ List X -> Set
 
 \section{Wrapping Up: What I've (Not) Told You}
 \subsection{This Is Actually an Agda Paper (!)}
-\subsection{Recapitulation}
+\subsection{Abstracting over Arbitrary Syntaxes}
 
 \begin{frame}[fragile]
   \frametitle{References}
