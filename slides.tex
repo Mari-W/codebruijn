@@ -436,13 +436,31 @@
 \begin{frame}[fragile]
   \frametitle{The Notion of Relevant Pairs}
   \begin{definition}
-    Let $\_×_R\_ : \bar{X} → \bar{X} → \bar{X}  = (T, S, \bar{x}) ↦ ((\_, \bar{b}₁ : T ⇑ \bar{x}) × (\_, \bar{b}₂ : S ⇑ \bar{x}) × ∃\bar{b}(\bar{b} ≡ \bar{b}₁ + \bar{b}₂))$. \\ We write $\_,_R\_ : T ⇑ \bar{x} → S ⇑ \bar{x} → (T ×_R S) ⇑ \bar{x} = ((\_, \bar{b}₁), (\_, \bar{b}₂)) ↦  (L(\bar{b}₁+\bar{b}₂) , R(\bar{b}₁+\bar{b}₂) , \bar{b}₁+\bar{b}₂)$ to construct a $T×_R S$. \\
+    Let $\_×_R\_ : \bar{X} → \bar{X} → \bar{X}  = (T, S, \bar{x}) ↦ ((\_, \bar{b}₁ : T ⇑ \bar{x}) × (\_, \bar{b}₂ : S ⇑ \bar{x}) × ∃\bar{b}(\bar{b} ≡ \bar{b}₁ + \bar{b}₂))$. \\ with $\_,_R\_ : T ⇑ \bar{x} → S ⇑ \bar{x} → (T ×_R S) ⇑ \bar{x} = ((t₁, \bar{b}₁), (t₂, \bar{b}₂)) ↦  ((t₁, \bar{b}₁') , (t₂, \bar{b}₂'), (\bar{b}₁|\bar{b}₂))$ to construct a $T×_R S$, where $\bar{b}_{1,2}' = ((\bar{b}₁|\bar{b}₂)\&\bar{b}_{1,2}) ↾ Σ(\bar{b}₁|\bar{b}₂)$\\
   \end{definition}
-  \begin{example}
-    We'll look at $Tm$
+  \begin{columns}
+    \begin{column}{0.53\textwidth}
+      \begin{example}
+        Let $(t₁, \bar{b}₁) : Tm \ 2 × 2 ⊑ 4 = .. , 01100)$\\
+        and $(t₂, \bar{b}₂) : Tm \ 2 × 2 ⊑ 4 = .. , 11000)$.\\
+        Then $\bar{b} : 3 ⊑ 4 = \bar{b}₁ | \bar{b}₂ = 11100$.
+        and $\bar{b}₁' = $
+      \end{example}
+    \end{column}
+    \begin{column}{0.42\textwidth}
+      \begin{example}
+        \adjustbox{scale=0.76}{
+          \begin{tikzcd}
+            01100 \arrow[rrrrrd, "0110"] \arrow[rrd, "011"'] &  &                           &  &  &       \\
+                                                             &  & 11100 \arrow[rrr, "1110"] &  &  & 11110 \\
+            11000 \arrow[rrrrru, "1100"'] \arrow[rru, "110"] &  &                           &  &  &      
+          \end{tikzcd}
+        }
+      \end{example}
+    \end{column}
+  \end{columns}
 
-    Let $.. #1 .. #2 .. : Tm 5$
-  \end{example}
+  
 \end{frame}
 
 \subsection{Monoidal Structure of Scopes}
