@@ -13,6 +13,9 @@
 \usepackage{tikz}
 \usetikzlibrary{cd}
 \usepackage{adjustbox}
+\usepackage[conor,links]{agda}
+
+\definecolor{bblue}{rgb}{0.2,0.2,0.7}
 
 \makeatletter
 \def\th@remarkstyle{
@@ -25,8 +28,8 @@
 \theoremstyle{remarkstyle}
 \newtheorem*{remark}{Remark}
 
-\title{Co-Debruijn: Everybody's Got To Be Somewhere$^{\text{\cite{codebruijn}}}$}
-\subtitle{From Debruijn to co-Debruijn using Category Theory}
+\title{From De Bruijn to co-De Bruijn using Category Theory}
+\subtitle{Everybody's Got To Be Somewhere$^{\text{\cite{coDe Bruijn}}}$}
 \institute[Uni Freiburg]{Chair of Programming Languages, University of
   Freiburg}
 \author{Marius Weidner}
@@ -95,7 +98,7 @@
 \begin{frame}[fragile]
   \frametitle{Objects \& Morphisms in $Δ_+^⊤$}
   \begin{example}
-    Let $X = ⊤$ (where $⊤$ is the set with exactly one element $⟨⟩$).\\Thus, Objects $\bar{x} ∈ X^*$ represents numbers. 
+    Let $X = ⊤$ (where $⊤$ is the set with exactly one element $⟨⟩$).\\Thus, Objects $n ∈ X^*$ represents numbers. 
     \begin{columns}
       \begin{column}{0.6\textwidth}
         \begin{center}
@@ -217,38 +220,38 @@
 \end{frame}
 
 
-\subsection{Intrinsically Scoped Debruijn Syntax}
+\subsection{Intrinsically Scoped De Bruijn Syntax}
 
 \begin{frame}[fragile]
-  \frametitle{Intrinsically Scoped Debruijn Syntax via $Δ_+^⊤$}
+  \frametitle{Intrinsically Scoped De Bruijn Syntax via $Δ_+^⊤$}
   \begin{definition}
     Let $Tm : |Δ_+^⊤| → Set$ be inductively defined: \\
     \begin{columns}
-      \begin{column}{0.3\textwidth}
+      \begin{column}{0.2\textwidth}
         \begin{center}
           \infer[\#]{
-            Tm \ \bar{x}
+            Tm \ n
           }{
-            ⟨⟩ ⊑ \bar{x}
+            1 ⊑ n
           }
         \end{center}
       \end{column}
       \begin{column}{0.3\textwidth}
         \begin{center}
           \infer[\$]{
-            Tm \ \bar{x}
+            Tm \ n
           }{
-            Tm \ \bar{x} &  
-            Tm \ \bar{x}
+            Tm \ n &  
+            Tm \ n
           }
         \end{center}
       \end{column}
       \begin{column}{0.3\textwidth}
         \begin{center}
           \infer[λ]{
-            Tm \ \bar{x}
+            Tm \ n
           }{
-            Tm \ \bar{x}⟨⟩
+            Tm \ (n + 1)
           }
         \end{center}
       \end{column}
@@ -259,23 +262,23 @@
   \end{example}
 \end{frame}
 
-\begin{frame}[fragile]
-  \frametitle{Lifting Scope Indexed Terms using Composition in $Δ_+^⊤$}
-  \begin{lemma}
-    Given an intrinsically scoped term $t ∈ Tm \ \bar{x}$ we can \emph{lift} $t$ to a $Tm \ \bar{y}$,
-    if there exists a morphism $\bar{x} ⊑ \bar{y} ∈ Δ_+^⊤(\bar{x}, \bar{y})$, 
-    i.e. $\bar{x}$ is a subscope of $\bar{y}$.
-  \end{lemma}
-  \begin{proof}
-    $\_↑\_ \ \ \ \ \ \ \ \ \ \ \,  : \ Tm \ \bar{x} → \bar{x} ⊑ \bar{y} → Tm \ \bar{y}$\\
-    $(\# \ v) \ \ \  \, ↑ f \ = \ \# \ (v ; f)$\\
-    $(t₁ \ \$ \ t₂) ↑ f \ = \ (t₁ ↑ f) \ \$ \ (t₂ ↑ f)$\\
-    $(λ \ t) \ \ \ \ \, ↑ f  \ = \ λ \ (t ↑ S f)$
-  \end{proof}
-\end{frame}
+% \begin{frame}[fragile]
+%   \frametitle{Lifting Scope Indexed Terms using Composition in $Δ_+^⊤$}
+%   \begin{lemma}
+%     Given an intrinsically scoped term $t ∈ Tm \ \bar{x}$ we can \emph{lift} $t$ to a $Tm \ \bar{y}$,
+%     if there exists a morphism $\bar{x} ⊑ \bar{y} ∈ Δ_+^⊤(\bar{x}, \bar{y})$, 
+%     i.e. $\bar{x}$ is a subSscope of $\bar{y}$.
+%   \end{lemma}
+%   \begin{proof}
+%     $\_↑\_ \ \ \ \ \ \ \ \ \ \ \,  : \ Tm \ \bar{x} → \bar{x} ⊑ \bar{y} → Tm \ \bar{y}$\\
+%     $(\# \ v) \ \ \  \, ↑ f \ = \ \# \ (v ; f)$\\
+%     $(t₁ \ \$ \ t₂) ↑ f \ = \ (t₁ ↑ f) \ \$ \ (t₂ ↑ f)$\\
+%     $(λ \ t) \ \ \ \ \, ↑ f  \ = \ λ \ (t ↑ S f)$
+%   \end{proof}
+% \end{frame}
 
 
-\section{Going Further: Stronger Intrinsic Invariants over Scopes and Binders}
+\section{Going Further: From De Bruijn to co-De Bruijn}
 \subsection{The Slice Category of Subscopes}
 
 \begin{frame}[fragile]
@@ -395,26 +398,13 @@
     We define $Ref : Set_X \stackrel{⋅}{→} Set_X$ to be the endofunctor induced by the mapping
     \begin{itemize}
       \item $Ref(T) = \bar{x} ↦ T ⇑ \bar{x} ∈ \bar{X}$
-      \item{$Ref(f_⋅) = (t, h) ↦ (f_⋅(t) , h) ∈ T \stackrel{⋅}{→} S$}
+      \item $Ref(f_⋅) = (t, h) ↦ (f_⋅(t) , h) ∈ T \stackrel{⋅}{→} S$
     \end{itemize}
   \end{definition}
   \begin{remark}
     The set $T⇑\bar{x}$ packs an set $T ∈ \bar{X}$ indexed by $\bar{x} ∈ X^*$ applied to a subscope $\bar{s}$ of $\bar{x}$, together with a selection $h ∈ |Δ_+^X∖\bar{x}|$ of the variables of $T$.
   \end{remark}
 \end{frame}
-
-
-% \begin{frame}[fragile]
-%   \frametitle{$Ref$ by example}
-%   \begin{example}
-%     \adjustbox{scale=1.05}{    
-%       \begin{tikzcd}
-%         & {} \arrow[rrrr, "Ref", dashed, bend left] &   &  &                                                                                & {} &   \\
-%         Tm  \arrow[rr, "f_⋅"] & {} \arrow[r] & T &  & {\bar{x} ↦ (Tm \ \bar{s}, \bar{s} ⊑ \bar{x})} \arrow[rr, "{(tm, h) ↦ (f_⋅ \ tm, h)}"] &    & {\bar{x} ↦ (T \ \bar{s}, \bar{s} ⊑ \bar{x})}
-%       \end{tikzcd}
-%     }
-%   \end{example}
-% \end{frame}
 
 \begin{frame}[fragile]
   \frametitle{$Δ_+^X$ makes $Ref$ a Monad!}
@@ -433,47 +423,111 @@
   \end{example}
 \end{frame}
 
+\frametitle{The Notion of Relevant Pairs}
 \begin{frame}[fragile]
   \frametitle{The Notion of Relevant Pairs}
   \begin{definition}
-    Let $\_×_R\_ : \bar{X} → \bar{X} → \bar{X}  = (T, S, \bar{x}) ↦ ((\_, \bar{b}₁ : T ⇑ \bar{x}) × (\_, \bar{b}₂ : S ⇑ \bar{x}) × ∃\bar{b}(\bar{b} ≡ \bar{b}₁ + \bar{b}₂))$. \\ with $\_,_R\_ : T ⇑ \bar{x} → S ⇑ \bar{x} → (T ×_R S) ⇑ \bar{x} = ((t₁, \bar{b}₁), (t₂, \bar{b}₂)) ↦  ((t₁, \bar{b}₁') , (t₂, \bar{b}₂'), (\bar{b}₁|\bar{b}₂))$ to construct a $T×_R S$, where $\bar{b}_{1,2}' = ((\bar{b}₁|\bar{b}₂)\&\bar{b}_{1,2}) ↾ Σ(\bar{b}₁|\bar{b}₂)$\\
+    We define the set of relevant pairs as:
+    \begin{itemize}
+      \item $\_×_R\_ : \bar{X} → \bar{X} → \bar{X}  = (T, S, \bar{x}) ↦ ((T ⇑ \bar{x}) × (S ⇑ \bar{x}))$
+      \item $\_,_R\_ : T ⇑ \bar{x} → S ⇑ \bar{x} → (T ×_R S) ⇑ \bar{x} = ((t₁, \bar{b}₁), (t₂, \bar{b}₂)) ↦  (((t₁, \bar{b}₁') , (t₂, \bar{b}₂')), \bar{b}')$ \\ 
+      where $\bar{b}' = \bar{b}₁ | \bar{b}₂$ and $\bar{b}_{1,2}' = ((\bar{b}₁|\bar{b}₂)\&\bar{b}_{1,2})$ 
+    \end{itemize}
   \end{definition}
-  \begin{columns}
-    \begin{column}{0.53\textwidth}
-      \begin{example}
-        Let $(t₁, \bar{b}₁) : Tm \ 2 × 2 ⊑ 4 = .. , 01100)$\\
-        and $(t₂, \bar{b}₂) : Tm \ 2 × 2 ⊑ 4 = .. , 11000)$.\\
-        Then $\bar{b} : 3 ⊑ 4 = \bar{b}₁ | \bar{b}₂ = 11100$.
-        and $\bar{b}₁' = $
-      \end{example}
-    \end{column}
-    \begin{column}{0.42\textwidth}
-      \begin{example}
-        \adjustbox{scale=0.76}{
-          \begin{tikzcd}
-            01100 \arrow[rrrrrd, "0110"] \arrow[rrd, "011"'] &  &                           &  &  &       \\
-                                                             &  & 11100 \arrow[rrr, "1110"] &  &  & 11110 \\
-            11000 \arrow[rrrrru, "1100"'] \arrow[rru, "110"] &  &                           &  &  &      
-          \end{tikzcd}
-        }
-      \end{example}
-    \end{column}
-  \end{columns}
-
-  
+  \begin{example}
+    \begin{columns}
+      \begin{column}{0.56\textwidth}
+          We again look at $Tm$ indexed by $Δ_+^T$. Let
+          $(t₁, \bar{b}₁) = (.. , 01100) : Tm ⇑ 5 = Tm \ 2 × 2 ⊑ 5$,
+          $(t₂, \bar{b}₂) = (.. , 11000) : Tm ⇑ 5 = Tm \ 2 × 2 ⊑ 5$.
+          Then $\bar{b} = \bar{b}₁ | \bar{b}₂ = 11100$ and $\bar{b}₁'  = 011$, $\bar{b}₂' = 110$. 
+          Thus $(t₁, \bar{b}₁) ,_R  (t₁, \bar{b}₂) = (((t₁, \bar{b}₁') , (t₂, \bar{b}₂')) , (\bar{b}₁ | \bar{b}₂))$ \\ 
+          $ \ \ : (Tm ×_R Tm) ⇑ 5$\\
+          $ \ = (Tm \ 2 × 2 ⊑ 3) × (Tm \ 2 × 2 ⊑ 3) × (3 ⊑ 5)$
+      \end{column}
+      \begin{column}{0.42\textwidth}
+          \adjustbox{scale=0.76}{
+            \begin{tikzcd}
+              01100 \arrow[rrrrrd, "01100"] \arrow[rrd, "011"'] &  &                           &  &  &       \\
+                                                               &  & 11100 \arrow[rrr, "11100"] &  &  & 11111 \\
+              11000 \arrow[rrrrru, "11000"'] \arrow[rru, "110"] &  &                           &  &  &      
+            \end{tikzcd}
+          }
+      \end{column}
+    \end{columns}
+  \end{example}
 \end{frame}
 
-\subsection{Monoidal Structure of Scopes}
-
-\subsection{Intrinsically Scopes co-Debruijn Syntax}
-
-\subsection{Translating Debruijn Syntax to Codebruijn Syntax}
-
+\subsection{Intrinsically Scoped co-De Bruijn Syntax}
+\begin{frame}[fragile]
+  \frametitle{Intrinsically Scoped co-De Bruijn Syntax}
+  \begin{definition}
+    Let $Tm : |Δ_+^⊤| → Set$ be inductively defined: \\
+    \begin{columns}
+      \begin{column}{0.2\textwidth}
+        \begin{center}
+          \infer[\#]{
+            Tm \ 1
+          }{
+            \\
+          }
+        \end{center}
+      \end{column}
+      \begin{column}{0.3\textwidth}
+        \begin{center}
+          \infer[\$]{
+            Tm \ n
+          }{
+            (Tm ×_R Tm) \ n
+          }
+        \end{center}
+      \end{column}
+      \begin{column}{0.25\textwidth}
+        \begin{center}
+          \infer[λ]{
+            Tm \ n
+          }{
+            Tm \ (n + 1)
+          }
+        \end{center}
+      \end{column}
+    \end{columns}
+  \end{definition}
+  \begin{example}
+    
+  \end{example}
+\end{frame}
 
 \section{Wrapping Up: What I've (Not) Told You}
 \subsection{This Is Actually an Agda Paper (!)}
-\subsection{Abstracting over Arbitrary Syntaxes}
 
+\begin{frame}[fragile]
+  \begin{columns}
+    \begin{column}{0.5\textwidth}
+      \large{\color{bblue} What I've (not) told you:\\This is actually an Agda Paper}
+      \vspace{10mm}
+      \begin{itemize}
+        \item All categorical concepts formalized in Agda
+        \item Suitable representations of objects and morphisms
+        \item Comes with a \emph{universe of metasyntaxes-with-binding} 
+        \item Categorical concepts applied to formally reason over programming languages
+      \end{itemize}
+      \vspace{30mm}
+    \end{column}
+    \begin{column}{0.5\textwidth}
+      \includegraphics[height=1.15\textheight]{coDe Bruijn-9.pdf}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\begin{frame}
+  \frametitle{Using co-De Bruijn is not hard, category theory is!}
+    \begin{AgdaSuppressSpace}
+      \include{coDe Bruijn.tex}
+    \end{AgdaSupressSpace}
+\end{frame}
+
+\subsection{References}
 \begin{frame}[fragile]
   \frametitle{References}
   \nocite{catsandtypes}
