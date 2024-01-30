@@ -8,12 +8,12 @@
 \usepackage[Latin,Greek]{ucharclasses}
 \usepackage{amsmath}
 \usepackage{proof}
+\usepackage[conor,links]{agda}
 \usepackage[backend=biber]{biblatex}
 \addbibresource{references.bib}
 \usepackage{tikz}
 \usetikzlibrary{cd}
 \usepackage{adjustbox}
-\usepackage[conor,links]{agda}
 
 \definecolor{bblue}{rgb}{0.2,0.2,0.7}
 
@@ -29,7 +29,7 @@
 \newtheorem*{remark}{Remark}
 
 \title{From De Bruijn to co-De Bruijn using Category Theory}
-\subtitle{Everybody's Got To Be Somewhere$^{\text{\cite{coDe Bruijn}}}$}
+\subtitle{Everybody's Got To Be Somewhere$^{\text{\cite{codebruijn}}}$}
 \institute[Uni Freiburg]{Chair of Programming Languages, University of
   Freiburg}
 \author{Marius Weidner}
@@ -427,29 +427,32 @@
 \begin{frame}[fragile]
   \frametitle{The Notion of Relevant Pairs}
   \begin{definition}
-    We define the set of relevant pairs as:
+    bla
+  \end{definition}
+  \begin{definition}
+    Let the set of relevant pairs be defined as 
     \begin{itemize}
-      \item $\_×_R\_ : \bar{X} → \bar{X} → \bar{X}  = (T, S, \bar{x}) ↦ ((T ⇑ \bar{x}) × (S ⇑ \bar{x}))$
-      \item $\_,_R\_ : T ⇑ \bar{x} → S ⇑ \bar{x} → (T ×_R S) ⇑ \bar{x} = ((t₁, \bar{b}₁), (t₂, \bar{b}₂)) ↦  (((t₁, \bar{b}₁') , (t₂, \bar{b}₂')), \bar{b}')$ \\ 
-      where $\bar{b}' = \bar{b}₁ | \bar{b}₂$ and $\bar{b}_{1,2}' = ((\bar{b}₁|\bar{b}₂)\&\bar{b}_{1,2})$ 
+      \item $\_×_R\_ : \bar{X} → \bar{X} → \bar{X}  = (T, S, \bar{x}) ↦ ((\_, \bar{b}₁ : T ⇑ \bar{x}) × (\_, \bar{b}₂ : S ⇑ \bar{x}) × Cov \ \bar{b}₁ \ \bar{b}₂)$.
+      \item $\_,_R\_ : T ⇑ \bar{x} → S ⇑ \bar{x} → (T ×_R S) \ \bar{x} = ((t₁, \bar{b}₁), (t₂, \bar{b}₂)) ↦  ((t₁, \bar{b}₁) , (t₂, \bar{b}₂), \bar{b}₁ ⊕ \bar{b}₂)$ \\ 
+      % where $\bar{b}' = \bar{b}₁ | \bar{b}₂$ and $\bar{b}_{1,2}' = ((\bar{b}₁|\bar{b}₂)\&\bar{b}_{1,2})$ 
     \end{itemize}
   \end{definition}
   \begin{example}
     \begin{columns}
       \begin{column}{0.56\textwidth}
-          We again look at $Tm$ indexed by $Δ_+^T$. Let
-          $(t₁, \bar{b}₁) = (.. , 01100) : Tm ⇑ 5 = Tm \ 2 × 2 ⊑ 5$,
-          $(t₂, \bar{b}₂) = (.. , 11000) : Tm ⇑ 5 = Tm \ 2 × 2 ⊑ 5$.
-          Then $\bar{b} = \bar{b}₁ | \bar{b}₂ = 11100$ and $\bar{b}₁'  = 011$, $\bar{b}₂' = 110$. 
-          Thus $(t₁, \bar{b}₁) ,_R  (t₁, \bar{b}₂) = (((t₁, \bar{b}₁') , (t₂, \bar{b}₂')) , (\bar{b}₁ | \bar{b}₂))$ \\ 
-          $ \ \ : (Tm ×_R Tm) ⇑ 5$\\
-          $ \ = (Tm \ 2 × 2 ⊑ 3) × (Tm \ 2 × 2 ⊑ 3) × (3 ⊑ 5)$
+          % We again look at $Tm$ indexed by $Δ_+^T$. Let
+          % $(t₁, \bar{b}₁) = (.. , 01100) : Tm ⇑ 5 = Tm \ 2 × 2 ⊑ 5$,
+          % $(t₂, \bar{b}₂) = (.. , 11000) : Tm ⇑ 5 = Tm \ 2 × 2 ⊑ 5$.
+          % Then $\bar{b} = \bar{b}₁ | \bar{b}₂ = 11100$ and $\bar{b}₁'  = 011$, $\bar{b}₂' = 110$. 
+          % Thus $(t₁, \bar{b}₁) ,_R  (t₁, \bar{b}₂) = (((t₁, \bar{b}₁') , (t₂, \bar{b}₂')) , (\bar{b}₁ | \bar{b}₂))$ \\ 
+          % $ \ \ : (Tm ×_R Tm) ⇑ 5$\\
+          % $ \ = (Tm \ 2 × 2 ⊑ 3) × (Tm \ 2 × 2 ⊑ 3) × (3 ⊑ 5)$
       \end{column}
       \begin{column}{0.42\textwidth}
           \adjustbox{scale=0.76}{
             \begin{tikzcd}
               01100 \arrow[rrrrrd, "01100"] \arrow[rrd, "011"'] &  &                           &  &  &       \\
-                                                               &  & 11100 \arrow[rrr, "11100"] &  &  & 11111 \\
+                                                                &  & \color{black}{1}\color{red}{2}\color{black}{100} \arrow[rrr, "11100"] &  &  & 11111 \\
               11000 \arrow[rrrrru, "11000"'] \arrow[rru, "110"] &  &                           &  &  &      
             \end{tikzcd}
           }
@@ -499,12 +502,12 @@
 \end{frame}
 
 \section{Wrapping Up: What I've (Not) Told You}
-\subsection{This Is Actually an Agda Paper (!)}
+\subsection{This Is Actually an Agda Paper}
 
 \begin{frame}[fragile]
   \begin{columns}
     \begin{column}{0.5\textwidth}
-      \large{\color{bblue} What I've (not) told you:\\This is actually an Agda Paper}
+      \large{\color{bblue} This is actually an Agda Paper}
       \vspace{10mm}
       \begin{itemize}
         \item All categorical concepts formalized in Agda
@@ -515,7 +518,7 @@
       \vspace{30mm}
     \end{column}
     \begin{column}{0.5\textwidth}
-      \includegraphics[height=1.15\textheight]{coDe Bruijn-9.pdf}
+      \includegraphics[height=1.15\textheight]{codebruijn-9.pdf}
     \end{column}
   \end{columns}
 \end{frame}
@@ -523,7 +526,7 @@
 \begin{frame}
   \frametitle{Using co-De Bruijn is not hard, category theory is!}
     \begin{AgdaSuppressSpace}
-      \include{coDe Bruijn.tex}
+      \include{codebruijn.tex}
     \end{AgdaSupressSpace}
 \end{frame}
 
