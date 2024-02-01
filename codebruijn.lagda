@@ -1,20 +1,20 @@
 \begin{code}[hide]
 module codebruijn where
-open import Data.Nat using (zero; suc) renaming (ℕ to N)
+open import Data.Nat using (ℕ; zero; suc)
 variable
-    k l m n : N
+    k l m n : ℕ
 \end{code}
 \begin{code}
-data Cover : (k l m : N) → Set where
-    done   :               Cover      0       0       0
-    left   : Cover k l m → Cover (suc k)      l  (suc m)
-    right  : Cover k l m → Cover      k  (suc l) (suc m)
-    both   : Cover k l m → Cover (suc k) (suc l) (suc m)
+data Cov : (k l m : ℕ) → Set where
+    ⋅ :             Cov      0       0       0
+    L : Cov k l m → Cov (suc k)      l  (suc m)
+    R : Cov k l m → Cov      k  (suc l) (suc m)
+    B : Cov k l m → Cov (suc k) (suc l) (suc m)
 
-data Term : N → Set where
-    var  : Term 1
-    lam  : Term (suc n) → Term n
-    app  : Cover k l m → Term k → Term l → Term m
+data Term : ℕ → Set where
+    #       : Term 1
+    ƛ       : Term (suc n) → Term n
+    _$[_]_  : Term k → Cov k l m → Term l → Term m
     
-_ = lam {-f-} (lam {-x-} (app (right (left done)) (var {-f-}) (var {-x-})))
+_ = ƛ (ƛ (ƛ ((# $[ L (R ⋅) ] #) $[ L (R (B ⋅)) ] (# $[ L (R ⋅) ] #))))
 \end{code}

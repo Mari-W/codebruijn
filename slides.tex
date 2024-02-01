@@ -7,6 +7,8 @@
 \usepackage{unicode-math}
 \usepackage[Latin,Greek]{ucharclasses}
 \usepackage{amsmath}
+\usepackage{stmaryrd}
+\usepackage{newunicodechar}
 \usepackage{proof}
 \usepackage[conor,links]{agda}
 \usepackage[backend=biber]{biblatex}
@@ -27,6 +29,9 @@
 \makeatother
 \theoremstyle{remarkstyle}
 \newtheorem*{remark}{Remark}
+
+\input{unicode}
+
 
 \title{From De Bruijn to co-De Bruijn using Category Theory}
 \subtitle{Everybody's Got To Be Somewhere$^{\text{\cite{codebruijn}}}$}
@@ -50,10 +55,10 @@
 \begin{frame}[fragile]
   \frametitle{The Category of Scopes: $Δ_+^X$}
   \begin{definition}
-    Let $Δ_+^X$ be the category of scopes.
+    Let $Δ_+^X$ be the category of scopes with
     \begin{itemize}
-      \item Objects: $\bar{x}, \bar{y}, \bar{s} ∈ |Δ_+^X| = X^*$
-      \item Morphisms: $f, g ∈ Δ_+^X(\bar{x}, \bar{y})$ for $\bar{x}, \bar{y} ∈ X^*$ are inductively defined:
+      \item Objects: $\bar{x}, \bar{y}, \bar{s} ∈ |Δ_+^X| = X^*$ ad
+      \item Morphisms: $f, g ∈ Δ_+^X(\bar{x}, \bar{y})$ for $\bar{x}, \bar{y} ∈ X^*$ are inductively defined by inference rules
     \end{itemize}
     \begin{columns}
       \begin{column}{0.04\textwidth}
@@ -87,9 +92,9 @@
       \end{column}
     \end{columns}
   \end{definition}
-  \begin{corollary}
-    The initial object of the $Δ_+^X$ category is the empty scope $ε$ with the $\bar{0}$ as the unique morphism. 
-  \end{corollary}
+  % \begin{corollary}
+  %   The initial object of the $Δ_+^X$ category is the empty scope $ε$ with the $\bar{0}$ as the unique morphism. 
+  % \end{corollary}
   \begin{remark}
     Morphisms in $Δ_+^X$ can be represented by \emph{bit vectors} $\bar{b} ∈ \{0, 1\}^*$ with one bit per variable of the target scope telling whether it has been mapped to or skipped by the source scope.
   \end{remark}
@@ -98,7 +103,7 @@
 \begin{frame}[fragile]
   \frametitle{Objects \& Morphisms in $Δ_+^⊤$}
   \begin{example}
-    Let $X = ⊤$ (where $⊤$ is the set with exactly one element $⟨⟩$).\\Thus, Objects $n ∈ X^*$ represents numbers. 
+    Let $X = ⊤$, where $⊤$ is the set with exactly one element $⟨⟩$.\\ Then, objects in $Δ_+^⊤$ represent numbers. 
     \begin{columns}
       \begin{column}{0.6\textwidth}
         \begin{center}
@@ -169,20 +174,21 @@
 \end{frame}
 
 \begin{frame}[fragile]
+  \frametitle{$Δ_+^X$ is in Fact a Category}
   \begin{columns}
-    \begin{column}{0.35\textwidth}
-      \large{\color{blue} $Δ_+^X$ is in Fact a Category}
+    \begin{column}{0.33\textwidth}
+      % \Large{\color{bblue} $Δ_+^X$ is in Fact a Category}
       \begin{lemma}
         \begin{small}
           In $Δ_+^X$ every object $\bar{x} ∈ X^*$ has an identity morphism, 
-          i.e. we can construct an identity morphism for $\bar{x}$ using the inference rules.
+          i.e. we can construct an identity morphism for every object $\bar{x}$ using the inference rules.
         \end{small}
       \end{lemma}
       \begin{proof}
         \begin{small}
         $id \ \ \ \ \ \ : \ (\bar{x} : X^*) → \bar{x} ⊑ \bar{x}$\\
         $id \ ε \ \ \ = \ ·$\\
-        $id \ \bar{x} x \ = \ ($id $ \bar{x})1$
+        $id \ \bar{x} x \ = \ (id \ \bar{x})1$
         \end{small}
       \end{proof}
       \begin{corollary}
@@ -192,7 +198,7 @@
         \end{small}
       \end{corollary}  
     \end{column}
-    \begin{column}{0.6\textwidth}
+    \begin{column}{0.62\textwidth}
       \begin{lemma}
         \begin{small}
         In $Δ_+^X$ two morphisms $f : \bar{x} ⊑ \bar{y}$ and $g : \bar{y} ⊑ \bar{z}$ 
@@ -212,7 +218,7 @@
       \begin{corollary}
         \begin{small}
         assoc \ \ \ \ : \ $f;(g;h) = (f;g);h$\\
-        antisym \ : \ $(f : \bar{x} ⊑ \bar{y}) → (g : \bar{y} ⊑ \bar{z}) → \bar{x} = \bar{y} \land f = g = $ id $\bar{x}$
+        antisym \ : \ $(f : \bar{x} ⊑ \bar{y}) → (g : \bar{y} ⊑ \bar{z}) → \bar{x} = \bar{y} \land f = g = id \ \bar{x}$
         \end{small}
       \end{corollary}  
     \end{column}
@@ -225,7 +231,7 @@
 \begin{frame}[fragile]
   \frametitle{Intrinsically Scoped De Bruijn Syntax via $Δ_+^⊤$}
   \begin{definition}
-    Let $Tm : |Δ_+^⊤| → Set$ be inductively defined: \\
+    Let $Tm : ℕ → Set$ be the set of lambda calculus terms inductively defined by
     \begin{columns}
       \begin{column}{0.2\textwidth}
         \begin{center}
@@ -258,25 +264,10 @@
     \end{columns}
   \end{definition}
   \begin{example}
-    
+    $𝕂 = λx. λy. x \quad \quad \quad \quad \ \ = λ \ λ \ \#1$\\
+    $𝕊 = λx. λy. λz. x \ z \ (y \ z) = λ \ λ \ λ \ \#2 \ \#0 \ (\#1 \ \#0)$
   \end{example}
 \end{frame}
-
-% \begin{frame}[fragile]
-%   \frametitle{Lifting Scope Indexed Terms using Composition in $Δ_+^⊤$}
-%   \begin{lemma}
-%     Given an intrinsically scoped term $t ∈ Tm \ \bar{x}$ we can \emph{lift} $t$ to a $Tm \ \bar{y}$,
-%     if there exists a morphism $\bar{x} ⊑ \bar{y} ∈ Δ_+^⊤(\bar{x}, \bar{y})$, 
-%     i.e. $\bar{x}$ is a subSscope of $\bar{y}$.
-%   \end{lemma}
-%   \begin{proof}
-%     $\_↑\_ \ \ \ \ \ \ \ \ \ \ \,  : \ Tm \ \bar{x} → \bar{x} ⊑ \bar{y} → Tm \ \bar{y}$\\
-%     $(\# \ v) \ \ \  \, ↑ f \ = \ \# \ (v ; f)$\\
-%     $(t₁ \ \$ \ t₂) ↑ f \ = \ (t₁ ↑ f) \ \$ \ (t₂ ↑ f)$\\
-%     $(λ \ t) \ \ \ \ \, ↑ f  \ = \ λ \ (t ↑ S f)$
-%   \end{proof}
-% \end{frame}
-
 
 \section{Going Further: From De Bruijn to co-De Bruijn}
 \subsection{The Slice Category of Subscopes}
@@ -286,9 +277,9 @@
   \begin{definition}
     \begin{columns}
       \begin{column}{0.68\textwidth}
-        Let $Δ_+^X∖\bar{s}$ be the category of subscopes for a given $\bar{s} ∈ X^*$. 
+        Let $Δ_+^X∖\bar{s}$ be the category of subscopes for a given $\bar{s} ∈ X^*$ with 
         \begin{itemize}
-          \item Objects: $\bar{b}, (\bar{x}, f) ∈ |Δ_+^X∖\bar{s}| = \left(\bar{x} : X^* × Δ_+^X(\bar{x}, \bar{s}) \right)$
+          \item Objects: $\bar{b}, (\bar{x}, f) ∈ |Δ_+^X∖\bar{s}| = \left(\bar{x} : X^* × Δ_+^X(\bar{x}, \bar{s}) \right)$ and
           \item Morphisms: $h ∈ [Δ_+^X∖\bar{s}]((\bar{x}, f), (\bar{y}, g))$ such that $f = h;g$ 
         \end{itemize}
       \end{column}
@@ -304,9 +295,9 @@
     \end{columns}
     
   \end{definition}
-  \begin{corollary}
-    The initial object of the $Δ_+^X∖\bar{s}$ category is the empty subscope $(ε, \bar{0})$. 
-  \end{corollary}
+  % \begin{corollary}
+  %   The initial object of the $Δ_+^X∖\bar{s}$ category is the empty subscope $(ε, \bar{0})$. 
+  % \end{corollary}
   \begin{remark}
     Objects in $Δ_+^X∖\bar{s}$ can be represented by \emph{bit vectors} $\bar{b} ∈ \{0, 1\}^*$ with one bit per variable of scope $\bar{s}$, telling whether it has been selected.
   \end{remark}
@@ -328,14 +319,13 @@
       \begin{column}{0.65\textwidth}
         \adjustbox{scale=0.6}{
           \begin{tikzcd}
-            3 \arrow[rr, "0111"]  &  & 4 &   & 4 \arrow[rr, "11110"] &  & 5 &  & 3 \arrow[rr, "01110"] &  & 5 \\
-                                  &  &   &   &                        &  &   &  &                        &  &   \\
-                                  &  & ∘ &   & • \arrow[rr, no head]  &  & • &  &                        &  & ∘ \\
-            • \arrow[rr, no head] &  & • &   & • \arrow[rr, no head]  &  & • &  & • \arrow[rr, no head]           &  & • \\
-            • \arrow[rr, no head] &  & • & ; & • \arrow[rr, no head]  &  & • & = & • \arrow[rr, no head]  & & • \\
-            • \arrow[rr, no head] &  & • &   & • \arrow[rr, no head]  &  & • &  & • \arrow[rr, no head]  &  & • \\
-                                  &  &   &   &                        &  & ∘ &  &                        &  & ∘
-            \end{tikzcd}
+            2 \arrow[rr, "011"]   &  & 3 &   & 3 \arrow[rr, "1110"]  &  & 4 &   & 2 \arrow[rr, "0110"]  &  & 4 \\
+                                  &  &   &   &                       &  &   &   &                       &  &   \\
+                                  &  & ∘ &   & • \arrow[rr, no head] &  & • &   &                       &  & ∘ \\
+            • \arrow[rr, no head] &  & • &   & • \arrow[rr, no head] &  & • &   & • \arrow[rr, no head] &  & • \\
+            • \arrow[rr, no head] &  & • & ; & • \arrow[rr, no head] &  & • & = & • \arrow[rr, no head] &  & • \\
+                                  &  &   &   &                       &  & ∘ &   &                       &  & ∘
+          \end{tikzcd}
         }
       \end{column}
     \end{columns}
@@ -356,9 +346,9 @@
 \end{frame}
 
 \begin{frame}[fragile]
-  \frametitle{Coproducts in $Δ_+^X∖\bar{s}$}
+  \frametitle{The Curious Case of Coproducts in $Δ_+^X∖\bar{s}$}
   \begin{theorem}
-    Objects in the slice category $\bar{b}₁, \bar{b}₂ ∈ |Δ_+^X∖\bar{s}|$ have a coproduct object $\bar{b}₁ + \bar{b}₂$ if there exist morphisms $l ∈ [Δ_+^X∖\bar{s}](\bar{b}₁, \bar{b}₁ + \bar{b}₂)$ and $r ∈ [Δ_+^X∖\bar{s}](\bar{b}₂, \bar{b}₁ + \bar{b}₂)$. Then for every $f ∈ [Δ_+^X∖\bar{s}](\bar{b}₁, \bar{b}_3)$ and $g ∈ [Δ_+^X∖\bar{s}](\bar{b}₂, \bar{b}_3)$, there exists a unqiue $h ∈ [Δ_+^X∖\bar{s}](\bar{b}₁ + \bar{b}₂, \bar{b}_3)$ such that $f = l;h$ and $g = r;h$.
+    Objects in the slice category $\bar{b}₁, \bar{b}₂ ∈ |Δ_+^X∖\bar{s}|$ have a coproduct object $\bar{b}₁ + \bar{b}₂$, i.e. there exist morphisms $l ∈ [Δ_+^X∖\bar{s}](\bar{b}₁, \bar{b}₁ + \bar{b}₂)$ and $r ∈ [Δ_+^X∖\bar{s}](\bar{b}₂, \bar{b}₁ + \bar{b}₂)$ such that every pair $f ∈ [Δ_+^X∖\bar{s}](\bar{b}₁, \bar{b}_3)$ and $g ∈ [Δ_+^X∖\bar{s}](\bar{b}₂, \bar{b}_3)$ factor through a unqiue $h ∈ [Δ_+^X∖\bar{s}](\bar{b}₁ + \bar{b}₂, \bar{b}_3)$ such that $f = l;h$ and $g = r;h$.
   \end{theorem}
   \begin{columns}
     \begin{column}{0.5\textwidth}
@@ -385,20 +375,20 @@
 \subsection{A Monad Over Sets Indexed by Scopes}
 
 \begin{frame}[fragile]
-  \frametitle{Category of Sets Indexed by Scopes}
+  \frametitle{The Category $Set_X$ of Sets Indexed by Scope}
   \begin{definition}
-    Let $Set_X$ be the category of sets indexed by scopes $\bar{x} ∈ X^*$.
+    Let $Set_X$ be the category of sets indexed by scopes $\bar{x} ∈ X^*$ with
     \begin{itemize}
-      \item Objects: $T, S ∈ |Set_X| = X^* → Set = \bar{X}$
+      \item Objects: $T, S ∈ |Set_X| = X^* → Set = \bar{X}$ and 
       \item Morphisms: $f_⋅ ∈ Set_X(T, S) = (\bar{x}∈X^*) → T(\bar{x}) → S(\bar{x}) = T \stackrel{⋅}{→} S$
     \end{itemize}
   \end{definition}
   \begin{definition}
-    Let $\_⇑\_ : \bar{X} → \bar{X} = (T, \bar{x}) ↦ (T(\bar{s}) × \bar{s} ⊑ \bar{x})$.\\
-    We define $Ref : Set_X \stackrel{⋅}{→} Set_X$ to be the endofunctor induced by the mapping
+    Let $\_⇑\_ : \bar{X} → \bar{X} = (T, \bar{x}) ↦ (T(\bar{s}) × \bar{s} ⊑ \bar{x})$. We write $t ↑ h$ for elements of  $T ⇑ \bar{x}$. 
+    \\We define $Ref : Set_X \stackrel{⋅}{→} Set_X$ to be the endofunctior induced by the mapping
     \begin{itemize}
-      \item $Ref(T) = \bar{x} ↦ T ⇑ \bar{x} ∈ \bar{X}$
-      \item $Ref(f_⋅) = (t, h) ↦ (f_⋅(t) , h) ∈ T \stackrel{⋅}{→} S$
+      \item $Ref(T) = (\bar{x} ↦ T ⇑ \bar{x}) ∈ \bar{X}$ for objects and
+      \item $Ref(f_⋅) = (t ↑ h) ↦ (f_⋅(t) ↑ h) ∈ T \stackrel{⋅}{→} S$ for morphisms
     \end{itemize}
   \end{definition}
   \begin{remark}
@@ -409,16 +399,16 @@
 \begin{frame}[fragile]
   \frametitle{$Δ_+^X$ makes $Ref$ a Monad!}
   \begin{theorem}
-    The functor $Ref : Set_X → Set_X$ gives rise to a monad with the two natural transformations
+    The endofunctor $Ref : Set_X → Set_X$ gives rise to a monad with the two natural transformations
     \begin{itemize}
-      \item $unit : Id(T) \stackrel{⋅}{→} Ref(T) = t ↦ (t, id)$ 
-      \item $mult : Ref(Ref(T)) \stackrel{⋅}{→} Ref(T) = ((t, h₁) h₂) ↦ (t, h₁;h₂)$
+      \item $unit : Id(T) \stackrel{⋅}{→} Ref(T) = t ↦ (t ↑ id)$ and
+      \item $mult : Ref(Ref(T)) \stackrel{⋅}{→} Ref(T) = ((t ↑ h₁) h₂) ↦ (t ↑ h₁;h₂)$
     \end{itemize}
   \end{theorem}
   \begin{example}
       \begin{tikzcd}
-        Tm \arrow[rr, "unit", dashed] &  & \bar{x} ↦ (Tm \ \bar{x}, \bar{x} ⊑ \bar{x}) \arrow[lld, "Ref"', dashed] \\
-        \bar{y} ↦ ([\bar{x} ↦ (Tm \ \bar{x}, \bar{x} ⊑ \bar{x})] \bar{s}, \bar{s} ⊑ \bar{y}) \arrow[rr, "mult", dashed]  &  & \bar{y} ↦ (Tm \ \bar{s}, \bar{s} ⊑ \bar{y})                        
+        Tm \arrow[rr, "unit", dashed] &  & \bar{x} ↦ (Tm \ \bar{x} ↑ \bar{x} ⊑ \bar{x}) \arrow[lld, "Ref"', dashed] \\
+        \bar{y} ↦ ([\bar{x} ↦ (Tm \ \bar{x} ↑ \bar{x} ⊑ \bar{x})] \bar{s} ↑ \bar{s} ⊑ \bar{y}) \arrow[rr, "mult", dashed]  &  & \bar{y} ↦ (Tm \ \bar{s} ↑ \bar{s} ⊑ \bar{y})                        
       \end{tikzcd}
   \end{example}
 \end{frame}
@@ -427,37 +417,84 @@
 \begin{frame}[fragile]
   \frametitle{The Notion of Relevant Pairs}
   \begin{definition}
-    bla
+    Let $Cov : \bar{x} ⊑ \bar{s} → \bar{y} ⊑ \bar{s} → Set$ be the set of \emph{coverings} indexed by morphisms $\bar{b}₁$ and $\bar{b}₂$
+    \begin{columns}
+      \begin{column}{0.2\textwidth}
+        \begin{center}
+          \infer[·]{
+            Cov \ · \ ·
+          }{}
+        \end{center}
+      \end{column}
+      \begin{column}{0.2\textwidth}
+        \begin{center}
+          \infer[L]{
+            Cov \ \bar{b}₁1 \ \bar{b}₂
+          }{
+            Cov \ \bar{b}₁ \ \bar{b}₂
+          }
+        \end{center}
+      \end{column}
+      \begin{column}{0.2\textwidth}
+        \begin{center}
+          \infer[R]{
+            Cov \ \bar{b}₁ \ \bar{b}₂1
+          }{
+            Cov \ \bar{b}₁ \ \bar{b}₂
+          }
+        \end{center}
+      \end{column}
+      \begin{column}{0.2\textwidth}
+        \begin{center}
+          \infer[B]{
+            Cov \ \bar{b}₁1 \ \bar{b}₂1
+          }{
+            Cov \ \bar{b}₁ \ \bar{b}₂
+          }
+        \end{center}
+      \end{column}
+    \end{columns}
   \end{definition}
   \begin{definition}
     Let the set of relevant pairs be defined as 
     \begin{itemize}
-      \item $\_×_R\_ : \bar{X} → \bar{X} → \bar{X}  = (T, S, \bar{x}) ↦ ((\_, \bar{b}₁ : T ⇑ \bar{x}) × (\_, \bar{b}₂ : S ⇑ \bar{x}) × Cov \ \bar{b}₁ \ \bar{b}₂)$.
-      \item $\_,_R\_ : T ⇑ \bar{x} → S ⇑ \bar{x} → (T ×_R S) \ \bar{x} = ((t₁, \bar{b}₁), (t₂, \bar{b}₂)) ↦  ((t₁, \bar{b}₁) , (t₂, \bar{b}₂), \bar{b}₁ ⊕ \bar{b}₂)$ \\ 
-      % where $\bar{b}' = \bar{b}₁ | \bar{b}₂$ and $\bar{b}_{1,2}' = ((\bar{b}₁|\bar{b}₂)\&\bar{b}_{1,2})$ 
+      \item $\_×_R\_ : \bar{X} → \bar{X} → \bar{X}  = (T, S, \bar{x}) ↦ ((\_ ↑ \bar{b}₁ : T ⇑ \bar{x}) × (\_ ↑ \bar{b}₂ : S ⇑ \bar{x}) × Cov \ \bar{b}₁ \ \bar{b}₂)$
+      \item $\_,_R\_ : T ⇑ \bar{x} → S ⇑ \bar{x} → (T ×_R S) ⇑ \bar{x}$ 
+      \\ \quad \quad \ $= (( t₁ ↑ \bar{b}₁), (t₂ ↑ \bar{b}₂)) ↦  ((t₁ ↑ \bar{b}₁') , (t₂ ↑ \bar{b}₂'), \bar{b}₁ ⊕ \bar{b}₂) ↑ \bar{b}'$ \\ 
     \end{itemize}
   \end{definition}
+  
+\end{frame}
+
+\begin{frame}[fragile]
+  \frametitle{Exploring Relevant Pairs}
+  \begin{remark}
+    Coverings $Cov \ \bar{b}₁ \ \bar{b}₂$ hold data about the coproduct of $\bar{b}₁$ and $\bar{b}₂$ as well as information about the original appearance of $\bar{b}₁$ and $\bar{b}₂$.
+  \end{remark}
   \begin{example}
     \begin{columns}
       \begin{column}{0.56\textwidth}
-          % We again look at $Tm$ indexed by $Δ_+^T$. Let
-          % $(t₁, \bar{b}₁) = (.. , 01100) : Tm ⇑ 5 = Tm \ 2 × 2 ⊑ 5$,
-          % $(t₂, \bar{b}₂) = (.. , 11000) : Tm ⇑ 5 = Tm \ 2 × 2 ⊑ 5$.
-          % Then $\bar{b} = \bar{b}₁ | \bar{b}₂ = 11100$ and $\bar{b}₁'  = 011$, $\bar{b}₂' = 110$. 
-          % Thus $(t₁, \bar{b}₁) ,_R  (t₁, \bar{b}₂) = (((t₁, \bar{b}₁') , (t₂, \bar{b}₂')) , (\bar{b}₁ | \bar{b}₂))$ \\ 
-          % $ \ \ : (Tm ×_R Tm) ⇑ 5$\\
-          % $ \ = (Tm \ 2 × 2 ⊑ 3) × (Tm \ 2 × 2 ⊑ 3) × (3 ⊑ 5)$
+          Look at $λx. λy. λz. z \ y = λ λ λ(\#0 \ \#1)$. \\
+          The variable terms could also be represented as
+          \begin{itemize}
+            \item $z' : Tm ⇑ 3 = \#0 ↑ 001$
+            \item $y' : Tm ⇑ 3 = \#1 ↑ 011$
+          \end{itemize}
       \end{column}
-      \begin{column}{0.42\textwidth}
-          \adjustbox{scale=0.76}{
+      \begin{column}{0.44\textwidth}
+          \adjustbox{scale=0.74}{
             \begin{tikzcd}
-              01100 \arrow[rrrrrd, "01100"] \arrow[rrd, "011"'] &  &                           &  &  &       \\
-                                                                &  & \color{black}{1}\color{red}{2}\color{black}{100} \arrow[rrr, "11100"] &  &  & 11111 \\
-              11000 \arrow[rrrrru, "11000"'] \arrow[rru, "110"] &  &                           &  &  &      
-            \end{tikzcd}
+              001 \arrow[rrrrrd, "001"] \arrow[rrd, "01"'] &  &                         &  &  &     \\
+                                                           &  & ⟨ BR \arrow[rrr, "011"] &  &  & 111 \\
+              011 \arrow[rrrrru, "011"'] \arrow[rru, "11"] &  &                         &  &  &    
+              \end{tikzcd}
           }
       \end{column}
     \end{columns}
+    And the application term could be a \emph{relevant pair} 
+    \begin{itemize}
+     \item $z' ,_R y' : (Tm ×_R Tm) ⇑ 3 = (\#0 ↑ 01, \#1 ↑ 11, BR) ↑ 011$
+    \end{itemize}
   \end{example}
 \end{frame}
 
@@ -465,7 +502,7 @@
 \begin{frame}[fragile]
   \frametitle{Intrinsically Scoped co-De Bruijn Syntax}
   \begin{definition}
-    Let $Tm : |Δ_+^⊤| → Set$ be inductively defined: \\
+    Let $Tm : ℕ → Set$ be inductively defined: \\
     \begin{columns}
       \begin{column}{0.2\textwidth}
         \begin{center}
@@ -497,7 +534,11 @@
     \end{columns}
   \end{definition}
   \begin{example}
-    
+    $𝕂 = λx. λy. x \quad \quad \quad \quad \ \ = \lightning$\\
+    $𝕊 = λx. λy. λz. x \ z \ (y \ z) = λ \ λ \ λ($\\
+    \quad \quad $(((\# ↑ 10) \$[(LR)] (\# ↑ 01)) ↑ 101) \ \$[(LRB)] $\\
+    \quad \quad $(((\# ↑ 10) \$[(LR)] (\# ↑ 01)) ↑ 011) $\\
+    $)$
   \end{example}
 \end{frame}
 
@@ -511,9 +552,9 @@
       \vspace{10mm}
       \begin{itemize}
         \item All categorical concepts formalized in Agda
-        \item Suitable representations of objects and morphisms
-        \item Comes with a \emph{universe of metasyntaxes-with-binding} 
-        \item Categorical concepts applied to formally reason over programming languages
+        \item Categorical concepts applied to formally reason over programming languages using theorem provers
+        \item Suitable representations of objects and morphisms required
+        \item Comes with a \emph{universe of metasyntaxes with binding} 
       \end{itemize}
       \vspace{30mm}
     \end{column}
