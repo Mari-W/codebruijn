@@ -143,7 +143,7 @@
         \begin{center}
           \adjustbox{scale=0.8}{
             \begin{tikzcd}
-              5 \arrow[rr, "id \ 5" = 11111]    &  & 5 \\
+              5 \arrow[rr, "id" = 11111]    &  & 5 \\
                                     &  &   \\
               • \arrow[rr, no head] &  & • \\
               • \arrow[rr, no head] &  & • \\
@@ -186,9 +186,9 @@
       \end{lemma}
       \begin{proof}
         \begin{small}
-        $id \ \ \ \ \ \ : \ (\bar{x} : X^*) → \bar{x} ⊑ \bar{x}$\\
+        $id \ \ \ \ \ \ : \ \bar{x} ⊑ \bar{x}$\\
         $id \ ε \ \ \ = \ ·$\\
-        $id \ \bar{x} x \ = \ (id \ \bar{x})1$
+        $id \ \bar{x} x \ = \ id 1$
         \end{small}
       \end{proof}
       \begin{corollary}
@@ -317,6 +317,7 @@
         }
       \end{column}
       \begin{column}{0.65\textwidth}
+        % TODO!!!!!!!!!
         \adjustbox{scale=0.6}{
           \begin{tikzcd}
             2 \arrow[rr, "011"]   &  & 3 &   & 3 \arrow[rr, "1110"]  &  & 4 &   & 2 \arrow[rr, "0110"]  &  & 4 \\
@@ -536,8 +537,8 @@
   \begin{example}
     $𝕂 = λx. λy. x \quad \quad \quad \quad \ \ = \lightning$\\
     $𝕊 = λx. λy. λz. x \ z \ (y \ z) = λ \ λ \ λ($\\
-    \quad \quad $(((\# ↑ 10) \$[(LR)] (\# ↑ 01)) ↑ 101) \ \$[(LRB)] $\\
-    \quad \quad $(((\# ↑ 10) \$[(LR)] (\# ↑ 01)) ↑ 011) $\\
+    \quad \quad $(((\# ↑ 10) ,_{[LR]} (\# ↑ 01)) ↑ 101) \ ,_{[LRB]} $\\
+    \quad \quad $(((\# ↑ 10) ,_{[LR]} (\# ↑ 01)) ↑ 011) $\\
     $)$
   \end{example}
 \end{frame}
