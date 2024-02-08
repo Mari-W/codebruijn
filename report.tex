@@ -13,8 +13,6 @@
 \usetikzlibrary{cd}
 \usepackage{adjustbox}
 
-\newtheorem*{remark}{Remark}
-
 \subtitle{Everybody's Got To Be Somewhere$^{\text{\cite{codebruijn}}}$}
 \title{\includegraphics[width=0.4\textwidth]{seal.png}~\\[1cm] From Debruijn to co-Debruijn using Category Theory}
 \subtitle{Everybody's Got To Be Somewhere$^{\text{\cite{codebruijn}}}$}
@@ -30,26 +28,51 @@
 \maketitle
 \def\addcontentsline#1#2#3{\oldaddcontentsline{#1}{#2}{#3}}
 
+\makeatletter
+\renewcommand\subsubsection{\@startsection{subsubsection}{3}{\z@}%
+                       {-8\p@ \@plus -4\p@ \@minus -4\p@}% Formerly -18\p@ \@plus -4\p@ \@minus -4\p@
+                       {-0.5em \@plus -0.22em \@minus -0.1em}%
+                       {\normalfont\normalsize\bfseries\boldmath}}
+\makeatother
+
 \begin{abstract}
   We explore the connection between De Bruijn indices used for variable representation in an intrinsically scoped syntax and the usage of co-De Bruijn representation. 
   To understand the duality between De Bruijn and co-De Bruijn, we will look into the categorical concepts underpinning scopes, binders, and intrinsically scoped syntaxes in general. 
-  Lastly, we will address challenges encountered in expressing these concepts and investigate the practical application of co-De Bruijn to specific syntaxes within theorem proving contexts.
+  All definitions, examples, and concepts presented here are directly derived from Conor McBride's paper$^{\text{\cite{codebruijn}}}$, with certain modifications and additional definitions and examples included. 
+  The original paper is written in Agda code but should have the same meaning as the on-paper math presented here. 
 \end{abstract}
 
 \setcounter{tocdepth}{2}
 \tableofcontents
-\newpage
 
 \section{Scopes and Binders Categorically}
-% TODO scopes -> variables
+Before we begin, it is important to fully understand the concept of variables, scopes, and binders. These concepts form the foundation of our exploration.
+Subsequently, we will examine these concepts within the framework of category theory. 
+Every categorical concept used will be defined and explained, thus any prerequisite knowledge beyond a solid understanding of set theory is not required.
+
+\subsubsection{Variables}
+serve as placeholders for terms in a language and are bound by binding terms within a language. 
+While variables could also appear free, i.e., not bound, we do not look at languages that allow this. 
+In fact, our very goal is to ensure that terms in some language can only be constructed in such a way that variables are used only when they are bound.
+
+\subsubsection{Scopes} fundamentally hold information about all the variables present within a particular term. 
+This information might simply entail the quantity of available variables or it could extend to include additional informationm such as the type of a variable. 
+
+\subsubsection{Binding} terms introduce new variables within a subterm, thereby expanding the scope of the subterm by one or more variables.
+
 \subsection{The Category of Scopes}
 \begin{definition}
   A category consists of a set of objects and a set of morphisms. 
   Morphisms are indexed by two objects: source and target. 
   Given a Category $𝒞$, we denote its objects as $|𝒞|$, and its morphisms from specified source to target as $𝒞(S, T)$, where $S, T ∈ |𝒞|$.
 \end{definition}
+
+Interestingly, this definition of a category differs from other definitions in the sense that morphisms are only defined between concrete objects $T$ and $S$. 
+Morphisms do not exist independently of their source and target objects. 
+This perspective is somewhat a constructivist view on categories, which fits, considering the original paper is formalized in Agda.
+
 \begin{definition}
-  For every set $X$, we define the category of scopes as $Δ_+^X$ with objects \(\bar{x}, \bar{y}, \bar{s} ∈ X^*\) and morphisms $f, g ∈ Δ_+^X(\bar{x}, \bar{y})$ inductively defined by the following inference rules in infix notation\footnote{In the construction of morphisms using inference rules, we omit the axiom rule $·$ most of the time.}:
+  For every set $X$, we define the category of scopes as $Δ_+^X$ with objects \(\bar{x}, \bar{y}, \bar{s} ∈ X^*\) and morphisms $f, g ∈ Δ_+^X(\bar{x}, \bar{y})$ inductively defined by the following inference rules in infix notation\footnote{In the construction of morphisms using inference rules, we usually omit the axiom rule $·$.}:
   \[
         \infer[·]{
           ε ⊑ ε
@@ -68,11 +91,24 @@
         }
   \]
 \end{definition}
+
+In the category of scopes, objects are represented are scopes, while morphisms are \emph{order-preserving embeddings}. 
+A scope is represented as a list of \emph{sorts}, indicating the sort of variables present in the scope, with the length of the list indicating the number of variables in the scope.
+
 \begin{example}
-  Let $X = ⊤$, where $⊤$ is the set with a single element $k$. In the category $Δ_+^T$, objects correspond to \emph{numbers} $n, p, q ∈ ⊤^* = ℕ$. 
-  In this scenario, objects symbolize scopes with $n$ variables, all of the same \emph{kind} $k$. 
+  Consider constructing the language of second-order lambda calculus, where both expression and type variables exist. 
+  In such a scenario, we can represent the set of sorts as $X = \{e, t\}$, where $e$ represents expression variables and $t$ represents type variables.
+\end{example}  
+
+A morphism in $Δ_+^X$ exists only if we can embed one scope into another by adding variables into the source scope without altering the order of variables from the source scope. 
+Once more, morphisms are defined inductively, which aligns with a constructive approach.
+
+\begin{example}
+  Let $X = ⊤$, where $⊤$ is the set with a single element $⋆$. In the category $Δ_+^T$, objects correspond to \emph{numbers} $n, p, q ∈ ⊤^* = ℕ$. 
+  In this scenario, objects are scopes with $n$ variables, all of the same \emph{sort} $⋆$. 
   Morphisms map from a smaller scope $p$ to a larger scope $q$ by selecting $p$ variables in $q$ and mapping all variables from $p$ to them.
-  \begin{figure}[ht]
+  Figure \ref{fig:ex1} illustrates the embedding of a scope with $3$ variables into one with $5$ variables in the required order-preserving manner.
+  \begin{figure}[]
     \centering
     \adjustbox{scale=0.75}{
       \begin{tikzcd}
@@ -86,20 +122,13 @@
                                &         &   & · &   &   &   &   &  
       \end{tikzcd}
     }
-    \caption{Embedding a scope with $3$ variables into a scope with $5$.}
+    \caption{Embedding a scope with $3$ variables into a scope with $5$}
     \label{fig:ex1}
   \end{figure}
 \end{example}
-\begin{example}
-  Let $X = 𝔹$, where $𝔹$ is the set with two elements $k₁$ and $k₂$. 
-  In the category $Δ_+^𝔹$, objects correspond to \emph{bit vectors} $\bar{b}, \bar{b}₁, \bar{b}₂ ∈ 𝔹^*$. 
-  Here, objects represent scopes with $‖b‖$ variables of either kind $k₁$ or $k₂$. 
-  Morphisms map from a smaller scope $\bar{b}₁$ to a larger scope $\bar{b}₂$ by inserting kinds into $\bar{b}₁$ while preserving the order of the variables in $\bar{b}₁$.
-  \label{ex:ex1}
-\end{example}
+
 \begin{remark}
-  Morphisms in $Δ_+^X$ can be represented by \emph{bit vectors} $\bar{b} ∈ \{0, 1\}^*$ with one bit per variable of the target scope telling whether it has been mapped to or skipped by the source scope. 
-  We use this representation from time to time.
+  Morphisms in $Δ_+^X$ can be represented by \emph{bit vectors} $\bar{b} ∈ \{0, 1\}^*$ with one bit per variable of the target scope telling whether it has been mapped to or skipped by the source scope.
 \end{remark}
 \begin{definition}
   We define the infix operation of composition $f;g$ for two morphisms $f ∈ Δ_+^X(\bar{x}, \bar{y})$ and $g ∈ Δ_+^X(\bar{y}, \bar{z})$, resulting in a morphism $h ∈ Δ_+^X(\bar{x}, \bar{z})$, inductively on the inference rules of morphisms:
@@ -119,7 +148,7 @@
 \end{remark}
 \begin{example}
   Let's reconsider the category $Δ_+^⊤$. Objects are represented by numbers, and morphisms can be encoded as bit vectors.
-  \begin{figure}[ht]
+  \begin{figure}[h]
     \centering
     \adjustbox{scale=0.75}{
           \begin{tikzcd}
@@ -146,15 +175,23 @@
   This can straightforwardly be proven through induction.
 \end{corollary}
 \begin{proposition}
-  The category of scopes is a well-defined category. 
+  The category of scopes $Δ_+^X$ is a well-defined category for every set $X$. 
   The composition operation $f;g$ is associative. 
   Identity morphisms exist within $Δ_+^X$ and act neutral in composition.
 \end{proposition}
 
+This concludes the definition of the category of scopes $Δ_+^X$. 
+Primarily, scopes serve as objects in this category and hold information regarding the sorts and quantities of variables present. 
+Furthermore, morphisms in this category embed one scope into another in an order-preserving manner. 
+Importantly, $Δ_+^X$ is in fact a valid category, characterized by associative morphism composition and the existence of identity morphisms.
+
 \subsection{Intrinsically Scoped De Bruijn Syntax}
+
+Next, we look at the definition of a \emph{intrinsically scoped} language that restricts the construction of terms such that variables can only be used if they were bound previously. 
+The indices of the set of terms in this language are objects in the category of scopes and pointing to a variable is achieved by using morphisms.
+
 \begin{definition}
-  The indexed set of intrinsically scoped lambda calculus terms is defined as $ℕ → Tm$, where the index corresponds to the number of variables $n ∈ |Δ_+^⊤| = ℕ$ present in the term. 
-  Terms within this set can be constructed using following inference rules\footnote{When constructing the $\$$ rule, we usually omit the dollar sign and, instead, express it by using a space between the two subterms.}:
+  The indexed set of intrinsically scoped lambda calculus terms $Tm : ℕ → Set$, where the index corresponds to the number of variables $n ∈ |Δ_+^⊤| = ℕ$ in scope inside the term, is defined inductively by the following inference rules\footnote{When constructing the $\$$ rule, we usually omit the dollar sign and, instead, express it by using a space between the two subterms.}:
   \[  
     \infer[\#]{
       Tm \ n
@@ -175,40 +212,52 @@
       Tm \ (n + 1)
     }
   \]
+  \label{def:tm}
 \end{definition}
-\begin{remark}
-  The $λ$ rule binds a new variable in its body, incrementing $n$ by one within that body. 
-  In contrast, the variable rule $\#$ points to a variable using a morphism in the scope category, precisely selecting one of the $n$ bound variables. 
-  The referencing of a variable can be represented by a bit vector of length $n$ with precisely one $1$. 
-  This representation in turn is equal to a number $m ∈ ℕ$ with $m \leq n$, indicating the position of the sole $1$ in the bit vector.
-\end{remark}
+
+The $λ$ rule binds a new variable in its body, incrementing $n$ by one within that body. 
+
+In contrast, the variable rule $\#$ points to a variable using a morphism in the scope category, precisely selecting one of the $n$ bound variables. 
+The referencing of a variable can be represented by a bit vector of length $n$ with precisely a single $1$ inside it. 
+This is in turn equal to a number $m ∈ [0, n]$, indicating the position of the sole $1$ in the bit vector.
+Numbers used as variables, indicating the amount of binders between the binding and the usage of a variable, are referred to as De Bruijn indices.
+
 \begin{example}
-  We examine the $𝕂$ and $𝕊$ combinators expressed in lambda calculus, comparing their representations with variables as names and intrinsic De Bruijn notation:
+  Consider the $𝕂$ and $𝕊$ combinators expressed in lambda calculus, comparing their representations with variables as names and intrinsic De Bruijn notation:
 
-  \quad $𝕂 = λx. λy. x \quad \quad \quad \quad \ \ = λ \ λ \ \#1$
+  \quad $𝕂 = λx. λy. x \quad \quad \quad \quad \ \ = λ  λ \#1$
 
-  \quad $𝕊 = λx. λy. λz. x \ z \ (y \ z) = λ \ λ \ λ \ \#2 \ \#0 \ (\#1 \ \#0)$
+  \quad $𝕊 = λx. λy. λz. x \ z \ (y \ z) = λ λ λ \#2 \ \#0 \ (\#1 \ \#0)$
 
-  \noindent Note that, for example, a De Bruijn term like $λ \#1$ could not even be defined using the given inference rules.
+  \noindent Note that, for example, a De Bruijn term $λ \ \#1$ could not even be defined using the given inference rules.
 \end{example}
 
 \section{From De Bruijn to co-De Bruijn}
+In the last section, all terms intrinsically possessed, by construction, knowledge of how many variables are in scope. 
+Variable constructors then selected one out of all variables in scope. 
+Now, our objective is to transition from De Bruijn representation to its dual, the co-De Bruijn representation.
+In the co-De Bruijn representation, instead of selecting the variable at the \emph{latest} point in the syntax tree (i.e., the leaf node in the tree, the variable constructor), we determine the fate of a variable at the \emph{earliest} possible moment.
+To understand this transition, we must delve deeper into the category of scopes.
+
 \subsection{The Slice Category of Scopes}
 \begin{definition}
-  If $𝒞$ is a category and $T, O ∈ |𝒞|$, the slice category $𝒞/O$ has pairs $(T, f)$ as objects, where $f ∈ 𝒞(T, O)$. A morphism in $(𝒞/O)((T, f), (S, g))$ is represented by $h ∈ 𝒞(T, S)$ such that $f = h;g$.
+  If $𝒞$ is a category and $S, T, O ∈ |𝒞|$, the slice category $𝒞/O$ has pairs $(S, f)$ as objects, where $f ∈ 𝒞(S, O)$. Morphisms in $(𝒞/O)((S, f), (T, g))$ are morphisms $h ∈ 𝒞(S, T)$ such that $f = h;g$.
 \end{definition}
-\begin{definition}
-  We refer to the slice category $Δ_+^X∖\bar{s}$ as the category of subscopes, where objects (subscopes of $\bar{s}$) are denoted by $\bar{b} ∈ |Δ_+^X|$ and morphisms (embedding of subscopes given some $\bar{s}$) are represented by $h ∈ [Δ_+^X](\bar{b}_1, \bar{b}_2)$.
-\end{definition}
+
+The slice category of a given category has pairs of objects and morphisms as objects, where the morphisms must have the objects in the pair as source and the object we slice through as their target. 
+The morphisms that remain in the slice category map between these pairs but are simply a subset of the morphisms in the original category, thus composing as expected. 
+We refer to the slice category $Δ_+^X∖\bar{s}$ as the category of subscopes, with objects $\bar{b} \in |Δ_+^X∖\bar{s}|$ and morphisms $h \in [Δ_+^X∖\bar{s}](\bar{b}_1, \bar{b}_2)$. 
+Given the scope $\bar{s}$ that we slice through, we now have objects that are pairs consisting of a (sub-)scope $\bar{x}$ of $\bar{s}$ and a mapping from $\bar{x}$ to $\bar{s}$.
+
 \begin{remark}
-  Objects $\bar{b}$ in $Δ_+^X∖\bar{s}$ are \emph{bit vectors} $\bar{b} ∈ \{0, 1\}^*$ with one bit per variable of scope $\bar{s}$, telling whether it has been selected.
+  Objects in $Δ_+^X∖\bar{s}$ are \emph{bit vectors} $\bar{b} ∈ \{0, 1\}^*$ with one bit per variable of slicing scope $\bar{s}$, telling whether it has been selected by the morphisms from the subscope\footnote{We only need one bit telling wether the variable has been selected and no information about the sort of the variables, because the morphisms that is inside the pair already guarantee sort preservation.}.
 \end{remark}
 \begin{example}
-  The morphism $0111$ in $Δ_+^T∖5$ from $01110$ to $11110$, denoted as $(3, 01110)$ to $(4, 11110)$, embeds a scope with 3 variables into one with 4 by inserting an additional unused variable at the very beginning. 
-  Since we sliced with object $5$, both $01110$ and $11110$ are subscopes of scope $4$, and the morphism $0111$ effectively embeds one subscope into the other.
-  \begin{figure}[ht]
+  The morphism $0111$ in $Δ_+^T∖5$ from $01110$ to $11110$ (or $(3, 01110)$ to $(4, 11110)$) embeds a scope with 3 variables into one with 4 by inserting an additional variable at the very beginning. 
+  Given that we sliced with object $5$, both $01110$ and $11110$ are subscopes of a scope with $5$ variables, and the morphism $0111$ effectively embeds one subscope into the other.
+  \begin{figure}[]
     \centering
-    \adjustbox{scale=0.75}{
+    \adjustbox{scale=0.65}{
       \begin{tikzcd}
         3 \arrow[rdd, "01110"', dotted] \arrow[rr, "0111"]  &   & 4 \arrow[ldd, "11110", dotted] \\
                                                             &   &                                 \\
@@ -219,38 +268,144 @@
     \label{fig:ex3}
   \end{figure}
 \end{example}
+
+\begin{definition}
+  Objects $T, S ∈ |𝒞|$ in category $𝒞$ possess a coproduct object $T + S$ if there exist morphisms $l ∈ 𝒞(T, T + S)$ and $r ∈ 𝒞(S, T + S)$ such that for every pair $f ∈ C(T,U)$ and $g ∈ 𝒞(S,U)$, there exists a unique morphism $h ∈ 𝒞(T + S,U)$ such that $f = l;h$ and $g = r;h$.
+\end{definition}
 \begin{example}
-  We can also compose embeddings of subscopes:
-  % TODO!!!!!!!!!
-  \begin{figure}[ht]
+  Coproduct in the category $Δ_+^⊤∖5$. ... explain
+  \begin{figure}[h]
     \centering
-    \adjustbox{scale=0.75}{
+    \adjustbox{scale=1}{
       \begin{tikzcd}
-        2 \arrow[rr, "011"]   &  & 3 &   & 3 \arrow[rr, "1110"]  &  & 4 &   & 2 \arrow[rr, "0110"]  &  & 4 \\
-                              &  &   &   &                       &  &   &   &                       &  &   \\
-                              &  & ∘ &   & • \arrow[rr, no head] &  & • &   &                       &  & ∘ \\
-        • \arrow[rr, no head] &  & • &   & • \arrow[rr, no head] &  & • &   & • \arrow[rr, no head] &  & • \\
-        • \arrow[rr, no head] &  & • & ; & • \arrow[rr, no head] &  & • & = & • \arrow[rr, no head] &  & • \\
-                              &  &   &   &                       &  & ∘ &   &                       &  & ∘
-      \end{tikzcd}
+        01100 \arrow[rrrrrd, "0110"] \arrow[rrd, "011"'] &  &                           &  &  &       \\
+                                                         &  & 11100 \arrow[rrr, "1110"] &  &  & 11110 \\
+        11000 \arrow[rrrrru, "1100"'] \arrow[rru, "110"] &  &                           &  &  &      
+        \end{tikzcd}
     }
-    \caption{In the diagram, objects in the slice category $Δ_+^⊤∖4$ at the top are represented solely by their numbers. The corresponding bit vector can be inferred from the dots and lines below.}
-    \label{fig:ex4}
+    \caption{Coproduct in the category $Δ_+^⊤∖5$.}
+    \label{fig:ex5}
   \end{figure}
 \end{example}
+\begin{remark}
+  The coproduct $\bar{b}₁ + \bar{b}₂$ of two subscopes $\bar{b}₁, \bar{b₂}$ corresponds to the minimal subscope covering both $\bar{b}₁$ and $\bar{b₂}$. 
+  The coproduct $\bar{b}₁ + \bar{b}₂$ can be computed by pointwise disjunction of $\bar{b}₁$ and $\bar{b}₂$. 
+\end{remark}
+
+\subsection{Sets Indexed by Scopes}
+
 \begin{definition}
-
+  We define the category $\overline{Set}$ as the category of sets indexed by scopes $\bar{x} ∈ X^*$. The category has objects $T, S ∈ |\overline{Set}| = X^* \to Set$, where we often abbreviate $X^* \to Set$ as $\bar{X}$. Morphisms $f ∈ \overline{Set}(T, S) = \{\bar{x} ∈ X^*\} \to T \ \bar{x} \to S \ \bar{x}$ are functions between sets implicitly indexed over the sets' indices.
 \end{definition}
-\subsection{A Monad over Sets Indexed by Scopes}
+\begin{example}
+  The set of intrinsically scoped debruijn terms in Definition \ref{def:tm} is an object of $\overline{Set}$.
+\end{example}
+\begin{definition}
+  Let $\_⇑\_ : \bar{X} → \bar{X} = (T, \bar{x}) ↦ (T(\bar{s}) × \bar{s} ⊑ \bar{x})$. We write $t ↑ h$ for elements of  $T ⇑ \bar{x}$. 
+\end{definition}
+\begin{remark}
+  The set $T⇑\bar{x}$ packs an set $T ∈ \bar{X}$ indexed by $\bar{x} ∈ X^*$ applied to a subscope $\bar{s}$ of $\bar{x}$, together with a selection $\bar{b} ∈ |Δ_+^X∖\bar{x}|$ of the variables of $T$.
+\end{remark}
 \subsection{The Notion of Relevant Pairs}
+
+\begin{definition}
+  Let $Cov : \bar{x} ⊑ \bar{s} → \bar{y} ⊑ \bar{s} → Set$ be the set of \emph{coverings} indexed by morphisms $\bar{b}₁$ and $\bar{b}₂$
+
+  \[
+    \infer[·]{
+      Cov \ · \ ·
+    }{}
+    \quad
+    \infer[L]{
+      Cov \ \bar{b}₁1 \ \bar{b}₂
+    }{
+      Cov \ \bar{b}₁ \ \bar{b}₂
+    }
+    \quad
+    \infer[R]{
+      Cov \ \bar{b}₁ \ \bar{b}₂1
+    }{
+      Cov \ \bar{b}₁ \ \bar{b}₂
+    }
+    \quad
+    \infer[B]{
+      Cov \ \bar{b}₁1 \ \bar{b}₂1
+    }{
+      Cov \ \bar{b}₁ \ \bar{b}₂
+    }
+  \]
+     
+\end{definition}
+
+\begin{remark}
+  Coverings $Cov \ \bar{b}₁ \ \bar{b}₂$ hold data about the coproduct of $\bar{b}₁$ and $\bar{b}₂$ as well as information about the original appearance of $\bar{b}₁$ and $\bar{b}₂$.
+\end{remark}
+
+\begin{definition}
+  Let the set of relevant pairs be defined as 
+  $\_×_R\_ : \bar{X} → \bar{X} → \bar{X}  = (T, S, \bar{x}) ↦ ((\_ ↑ \bar{b}₁ : T ⇑ \bar{x}) × (\_ ↑ \bar{b}₂ : S ⇑ \bar{x}) × Cov \ \bar{b}₁ \ \bar{b}₂)$ +
+  were elements are denoted as $\_,_R\_ : T ⇑ \bar{x} → S ⇑ \bar{x} → (T ×_R S) ⇑ \bar{x} = (( t₁ ↑ \bar{b}₁), (t₂ ↑ \bar{b}₂)) ↦ ((t₁ ↑ \bar{b}₁') , (t₂ ↑ \bar{b}₂'), \bar{b}₁ ⊕ \bar{b}₂) ↑ \bar{b}'$ \\ 
+  \end{itemize}
+\end{definition}
+
+\begin{example}
+  Look at the term $λx. λy. λz. z \ y = λ λ λ(\#0 \ \#1)$ in De Bruijn notation. \\
+  The variable terms could also be written as
+  $z' : Tm ⇑ 3 = \#0 ↑ 001$ and $y' : Tm ⇑ 3 = \#1 ↑ 011$.
+  \begin{figure}[h]
+    \centering
+    \begin{tikzcd}
+      001 \arrow[rrrrrd, "001"] \arrow[rrd, "01"'] &  &                         &  &  &     \\
+                                                   &  & ⟨ BR \arrow[rrr, "011"] &  &  & 111 \\
+      011 \arrow[rrrrru, "011"'] \arrow[rru, "11"] &  &                         &  &  &    
+    \end{tikzcd}
+    \caption{Covering in the category $Δ_+^⊤∖3$.}
+    \label{fig:ex6}
+  \end{figure}
+  And the application term could be a \emph{relevant pair} $z' ,_R y' : (Tm ×_R Tm) ⇑ 3 = (\#0 ↑ 01, \#1 ↑ 11, BR) ↑ 011$
+\end{example}
+
 \subsection{Intrinsically Scoped co-De Bruijn Syntax}
+\begin{definition}
+  Let $Tm : ℕ → Set$ be inductively defined: \\
+  \[
+     \infer[\#]{
+       Tm \ 1
+     }{
+       \\
+     }
+     \quad
+     \infer[\$]{
+       Tm \ n
+     }{
+       (Tm ×_R Tm) \ n
+     }
+     \quad
+     \infer[λ]{
+       Tm \ n
+     }{
+       Tm \ (n + 1)
+     }
+  \]
+\end{definition}
+\begin{example} 
+  We again consider the $𝕂$ and $𝕊$ combinators. 
+  For convenience the cover computed by the relevant pair next to the comma. 
 
-% \section{Proof Assistants and co-De Bruijn}
-% \subsection{A Simple co-De Bruijn Syntax in Agda}
-% \subsection{A Universe of Metasyntaxes with Binding}
-% 
-% \section{Tell them what you have told them}
+  $𝕂 = λx. λy. x \quad \quad \quad \quad \ \ = \lightning$
 
+  $𝕊 = λx. λy. λz. x \ z \ (y \ z) = λ \ λ \ λ($
+
+  \quad \quad $(((\# ↑ 10) ,_{[LR]} (\# ↑ 01)) ↑ 101) \ ,_{[LRB]} $
+
+  \quad \quad $(((\# ↑ 10) ,_{[LR]} (\# ↑ 01)) ↑ 011) $
+
+  $)$
+
+  The $𝕂$ is not definable with our co-De Bruijn syntax because unused variables are not allowed to exist. 
+\end{example}
+
+\nocite{catsandtypes}
 \printbibliography{}
 
 \end{document}

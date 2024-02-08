@@ -57,7 +57,7 @@
   \begin{definition}
     Let $Δ_+^X$ be the category of scopes with
     \begin{itemize}
-      \item Objects: $\bar{x}, \bar{y}, \bar{s} ∈ |Δ_+^X| = X^*$ ad
+      \item Objects: $\bar{x}, \bar{y}, \bar{s} ∈ |Δ_+^X| = X^*$ and
       \item Morphisms: $f, g ∈ Δ_+^X(\bar{x}, \bar{y})$ for $\bar{x}, \bar{y} ∈ X^*$ are inductively defined by inference rules
     \end{itemize}
     \begin{columns}
@@ -199,26 +199,25 @@
       \end{corollary}  
     \end{column}
     \begin{column}{0.62\textwidth}
-      \begin{lemma}
-        \begin{small}
+      \begin{definition}
+        
         In $Δ_+^X$ two morphisms $f : \bar{x} ⊑ \bar{y}$ and $g : \bar{y} ⊑ \bar{z}$ 
         compose to a morphism $f;g : \bar{x} ⊑ \bar{z}$, 
-        i.e. we can construct a morphism $f;g$ from $f$ and $g$ using the inference rules.
-        \end{small}
-      \end{lemma}
-      \begin{proof}
-        \begin{small}
+        i.e. we can construct a morphism $f;g$ from $f$ and $g$ using the inference rules:
+
+        \vspace{8mm}
+
         $\_;\_ \ \ \ \ \ \ : \ \bar{x} ⊑ \bar{y} → \bar{y} ⊑ \bar{z} → \bar{x} ⊑ \bar{z}$\\
         $·  \ \ \, ; \ · \ \ \ \ = \ ·$\\
         $f 1  \ ; \ g 1 \ = \ (f;g)1$\\
         $f 0 \ ; \ g 1  \ = \ (f;g)0$\\
         $f \ \ \, ; \ g 0 \ = \ (f;g)0$
-        \end{small}
-      \end{proof}
+        
+      \end{definition}
       \begin{corollary}
         \begin{small}
         assoc \ \ \ \ : \ $f;(g;h) = (f;g);h$\\
-        antisym \ : \ $(f : \bar{x} ⊑ \bar{y}) → (g : \bar{y} ⊑ \bar{z}) → \bar{x} = \bar{y} \land f = g = id \ \bar{x}$
+        antisym \ : \ $(f : \bar{x} ⊑ \bar{y}) → (g : \bar{y} ⊑ \bar{x}) → \bar{x} = \bar{y} \land f = g = id \ \bar{x}$
         \end{small}
       \end{corollary}  
     \end{column}
@@ -293,11 +292,7 @@
         }
       \end{column}
     \end{columns}
-    
   \end{definition}
-  % \begin{corollary}
-  %   The initial object of the $Δ_+^X∖\bar{s}$ category is the empty subscope $(ε, \bar{0})$. 
-  % \end{corollary}
   \begin{remark}
     Objects in $Δ_+^X∖\bar{s}$ can be represented by \emph{bit vectors} $\bar{b} ∈ \{0, 1\}^*$ with one bit per variable of scope $\bar{s}$, telling whether it has been selected.
   \end{remark}
@@ -307,8 +302,8 @@
   \frametitle{Objects \& Morphisms in $Δ_+^T∖5$}
   \begin{example}
     \begin{columns}
-      \begin{column}{0.3\textwidth}
-        \adjustbox{scale=1}{
+      \begin{column}{0.5\textwidth}
+        \adjustbox{scale=1.5}{
           \begin{tikzcd}
             3 \arrow[rdd, "01110"', dotted] \arrow[rr, "0111"]  &   & 4 \arrow[ldd, "11110", dotted] \\
                                                                 &   &                                 \\
@@ -316,33 +311,33 @@
             \end{tikzcd}
         }
       \end{column}
-      \begin{column}{0.65\textwidth}
+      \begin{column}{0.45\textwidth}
         % TODO!!!!!!!!!
-        \adjustbox{scale=0.6}{
+        % \adjustbox{scale=0.6}{
+        %   \begin{tikzcd}
+        %     2 \arrow[rr, "011"]   &  & 3 &   & 3 \arrow[rr, "1110"]  &  & 4 &   & 2 \arrow[rr, "0110"]  &  & 4 \\
+        %                           &  &   &   &                       &  &   &   &                       &  &   \\
+        %                           &  & ∘ &   & • \arrow[rr, no head] &  & • &   &                       &  & ∘ \\
+        %     • \arrow[rr, no head] &  & • &   & • \arrow[rr, no head] &  & • &   & • \arrow[rr, no head] &  & • \\
+        %     • \arrow[rr, no head] &  & • & ; & • \arrow[rr, no head] &  & • & = & • \arrow[rr, no head] &  & • \\
+        %                           &  &   &   &                       &  & ∘ &   &                       &  & ∘
+        %   \end{tikzcd}
+        % }
+        Alternatively:
+        \begin{itemize}
+        \item \adjustbox{scale=1}{
           \begin{tikzcd}
-            2 \arrow[rr, "011"]   &  & 3 &   & 3 \arrow[rr, "1110"]  &  & 4 &   & 2 \arrow[rr, "0110"]  &  & 4 \\
-                                  &  &   &   &                       &  &   &   &                       &  &   \\
-                                  &  & ∘ &   & • \arrow[rr, no head] &  & • &   &                       &  & ∘ \\
-            • \arrow[rr, no head] &  & • &   & • \arrow[rr, no head] &  & • &   & • \arrow[rr, no head] &  & • \\
-            • \arrow[rr, no head] &  & • & ; & • \arrow[rr, no head] &  & • & = & • \arrow[rr, no head] &  & • \\
-                                  &  &   &   &                       &  & ∘ &   &                       &  & ∘
+            {(3, 01110)} \arrow[rr, "0111"] &  & {(4, 11110)}
           \end{tikzcd}
         }
+        \item \adjustbox{scale=1}{
+          \begin{tikzcd}
+            {01110} \arrow[rr, "0111"] &  & {11110}
+          \end{tikzcd}
+        }
+        \end{itemize}
       \end{column}
     \end{columns}
-    Alternatively:
-    \begin{itemize}
-    \item \adjustbox{scale=1}{
-      \begin{tikzcd}
-        {(3, 01110)} \arrow[rr, "0111"] &  & {(4, 11110)}
-      \end{tikzcd}
-    }
-    \item \adjustbox{scale=1}{
-      \begin{tikzcd}
-        {01110} \arrow[rr, "0111"] &  & {11110}
-      \end{tikzcd}
-    }
-    \end{itemize}
   \end{example}
 \end{frame}
 
@@ -367,56 +362,62 @@
       \begin{remark}
         The coproduct $\bar{b}₁ + \bar{b}₂$ of two subscopes $\bar{b}₁, \bar{b₂}$ 
         corresponds to the minimal subscope covering both $\bar{b}₁$ and $\bar{b₂}$. 
-        The coproduct $\bar{b}₁ + \bar{b}₂$ can be computed by pointswise disjunction of $\bar{b}₁$ and $\bar{b}₂$. 
+        The coproduct $\bar{b}₁ + \bar{b}₂$ can be computed by pointwise disjunction of $\bar{b}₁$ and $\bar{b}₂$. 
       \end{remark}
     \end{column}
   \end{columns}
 \end{frame}
 
-\subsection{A Monad Over Sets Indexed by Scopes}
+\subsection{Sets Indexed by Scopes}
 
 \begin{frame}[fragile]
-  \frametitle{The Category $Set_X$ of Sets Indexed by Scope}
+  \frametitle{The Category $\overline{Set}$ of Sets Indexed by Scope}
   \begin{definition}
-    Let $Set_X$ be the category of sets indexed by scopes $\bar{x} ∈ X^*$ with
+    Let $\overline{Set}$ be the category of sets indexed by scopes with
     \begin{itemize}
-      \item Objects: $T, S ∈ |Set_X| = X^* → Set = \bar{X}$ and 
-      \item Morphisms: $f_⋅ ∈ Set_X(T, S) = (\bar{x}∈X^*) → T(\bar{x}) → S(\bar{x}) = T \stackrel{⋅}{→} S$
+      \item Objects: $T, S ∈ |\overline{Set}| = \bar{X} = X^* → Set $ and 
+      \item Morphisms: $f_⋅ ∈ \overline{Set}(T, S) = (\bar{x}∈X^*) → T(\bar{x}) → S(\bar{x}) = T \stackrel{⋅}{→} S$
     \end{itemize}
   \end{definition}
   \begin{definition}
-    Let $\_⇑\_ : \bar{X} → \bar{X} = (T, \bar{x}) ↦ (T(\bar{s}) × \bar{s} ⊑ \bar{x})$. We write $t ↑ h$ for elements of  $T ⇑ \bar{x}$. 
-    \\We define $Ref : Set_X \stackrel{⋅}{→} Set_X$ to be the endofunctior induced by the mapping
-    \begin{itemize}
-      \item $Ref(T) = (\bar{x} ↦ T ⇑ \bar{x}) ∈ \bar{X}$ for objects and
-      \item $Ref(f_⋅) = (t ↑ h) ↦ (f_⋅(t) ↑ h) ∈ T \stackrel{⋅}{→} S$ for morphisms
-    \end{itemize}
+    Let $\_⇑\_ : \bar{X} → \bar{X} = (T, \bar{x}) ↦ (T(\bar{s}) × \bar{s} ⊑ \bar{x})$ be the set of a terms together with a selection of its variables.
+    We write $t ↑ h$ for elements of  $T ⇑ \bar{x}$. 
+    % \\We define $Ref : \overline{Set} \stackrel{⋅}{→} \overline{Set}$ to be the endofunctior induced by the mapping
+    % \begin{itemize}
+    %   \item $Ref(T) = (\bar{x} ↦ T ⇑ \bar{x}) ∈ \bar{X}$ for objects and
+    %   \item $Ref(f_⋅) = (t ↑ h) ↦ (f_⋅(t) ↑ h) ∈ T \stackrel{⋅}{→} S$ for morphisms
+    % \end{itemize}
   \end{definition}
-  \begin{remark}
-    The set $T⇑\bar{x}$ packs an set $T ∈ \bar{X}$ indexed by $\bar{x} ∈ X^*$ applied to a subscope $\bar{s}$ of $\bar{x}$, together with a selection $h ∈ |Δ_+^X∖\bar{x}|$ of the variables of $T$.
-  \end{remark}
 \end{frame}
 
-\begin{frame}[fragile]
-  \frametitle{$Δ_+^X$ makes $Ref$ a Monad!}
-  \begin{theorem}
-    The endofunctor $Ref : Set_X → Set_X$ gives rise to a monad with the two natural transformations
-    \begin{itemize}
-      \item $unit : Id(T) \stackrel{⋅}{→} Ref(T) = t ↦ (t ↑ id)$ and
-      \item $mult : Ref(Ref(T)) \stackrel{⋅}{→} Ref(T) = ((t ↑ h₁) h₂) ↦ (t ↑ h₁;h₂)$
-    \end{itemize}
-  \end{theorem}
-  \begin{example}
-      \begin{tikzcd}
-        Tm \arrow[rr, "unit", dashed] &  & \bar{x} ↦ (Tm \ \bar{x} ↑ \bar{x} ⊑ \bar{x}) \arrow[lld, "Ref"', dashed] \\
-        \bar{y} ↦ ([\bar{x} ↦ (Tm \ \bar{x} ↑ \bar{x} ⊑ \bar{x})] \bar{s} ↑ \bar{s} ⊑ \bar{y}) \arrow[rr, "mult", dashed]  &  & \bar{y} ↦ (Tm \ \bar{s} ↑ \bar{s} ⊑ \bar{y})                        
-      \end{tikzcd}
-  \end{example}
-\end{frame}
+% \begin{frame}[fragile]
+%   \frametitle{$Δ_+^X$ makes $Ref$ a Monad!}
+%   \begin{remark}
+%     The set $T⇑\bar{x}$ packs an set $T ∈ \bar{X}$ indexed by $\bar{x} ∈ X^*$ applied to a subscope $\bar{s}$ of $\bar{x}$, together with a selection $h ∈ |Δ_+^X∖\bar{x}|$ of the variables of $T$.
+%   \end{remark}
+%   \begin{theorem}
+%     The endofunctor $Ref : \overline{Set} → \overline{Set}$ gives rise to a monad with the two natural transformations
+%     \begin{itemize}
+%       \item $pure : Id(T) \stackrel{⋅}{→} Ref(T) = t ↦ (t ↑ id)$ and
+%       \item $join : Ref(Ref(T)) \stackrel{⋅}{→} Ref(T) = ((t ↑ h₁)↑ h₂) ↦ (t ↑ h₁;h₂)$
+%     \end{itemize}
+%   \end{theorem}
+%   \begin{example}
+%     \adjustbox{scale=0.74}{
+%       \begin{tikzcd}
+%         Tm \arrow[rr, "pure", dashed] &  & \bar{x} ↦ (Tm \ \bar{x} ↑ \bar{x} ⊑ \bar{x}) \arrow[lld, "Ref"', dashed] \\
+%         \bar{y} ↦ ([\bar{x} ↦ (Tm \ \bar{x} ↑ \bar{x} ⊑ \bar{x})] \bar{s} ↑ \bar{s} ⊑ \bar{y}) \arrow[rr, "join", dashed]  &  & \bar{y} ↦ (Tm \ \bar{s} ↑ \bar{s} ⊑ \bar{y})                        
+%       \end{tikzcd}
+%     }
+%   \end{example}
+% \end{frame}
 
 \frametitle{The Notion of Relevant Pairs}
 \begin{frame}[fragile]
   \frametitle{The Notion of Relevant Pairs}
+  \begin{remark}
+    The set $T⇑\bar{x}$ packs an set $T ∈ \bar{X}$ indexed by $\bar{x} ∈ X^*$ applied to a subscope $\bar{s}$ of $\bar{x}$, together with a selection $\bar{b} ∈ |Δ_+^X∖\bar{x}|$ of the variables of $T$.
+  \end{remark}
   \begin{definition}
     Let $Cov : \bar{x} ⊑ \bar{s} → \bar{y} ⊑ \bar{s} → Set$ be the set of \emph{coverings} indexed by morphisms $\bar{b}₁$ and $\bar{b}₂$
     \begin{columns}
@@ -455,8 +456,6 @@
         \end{center}
       \end{column}
     \end{columns}
-  \end{definition}
-  \begin{definition}
     Let the set of relevant pairs be defined as 
     \begin{itemize}
       \item $\_×_R\_ : \bar{X} → \bar{X} → \bar{X}  = (T, S, \bar{x}) ↦ ((\_ ↑ \bar{b}₁ : T ⇑ \bar{x}) × (\_ ↑ \bar{b}₂ : S ⇑ \bar{x}) × Cov \ \bar{b}₁ \ \bar{b}₂)$
@@ -537,8 +536,8 @@
   \begin{example}
     $𝕂 = λx. λy. x \quad \quad \quad \quad \ \ = \lightning$\\
     $𝕊 = λx. λy. λz. x \ z \ (y \ z) = λ \ λ \ λ($\\
-    \quad \quad $(((\# ↑ 10) ,_{[LR]} (\# ↑ 01)) ↑ 101) \ ,_{[LRB]} $\\
-    \quad \quad $(((\# ↑ 10) ,_{[LR]} (\# ↑ 01)) ↑ 011) $\\
+    \quad \quad $((((\# ↑ 10) ,_{[LR]} (\# ↑ 01)) ↑ 101) ,_{[LRB]} $\\
+    \quad \quad $(((\# ↑ 10) ,_{[LR]} (\# ↑ 01)) ↑ 011)) ↑ id$\\
     $)$
   \end{example}
 \end{frame}
@@ -550,17 +549,18 @@
   \begin{columns}
     \begin{column}{0.5\textwidth}
       \large{\color{bblue} This is actually an Agda Paper}
-      \vspace{10mm}
+      \vspace{5mm}
       \begin{itemize}
         \item All categorical concepts formalized in Agda
         \item Categorical concepts applied to formally reason over programming languages using theorem provers
-        \item Suitable representations of objects and morphisms required
+        \item Suitable representations of objects and morphisms that \emph{do not block} are required
         \item Comes with a \emph{universe of metasyntaxes with binding} 
+        \item Defines \emph{hereditary} substitution on metasyntaxes 
       \end{itemize}
-      \vspace{30mm}
+      \vspace{10mm}
     \end{column}
     \begin{column}{0.5\textwidth}
-      \includegraphics[height=1.15\textheight]{codebruijn-9.pdf}
+      \includegraphics[height=1.15\textheight]{egtbs-9.pdf}
     \end{column}
   \end{columns}
 \end{frame}

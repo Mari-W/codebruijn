@@ -11,10 +11,10 @@ data Cov : (k l m : ℕ) → Set where
     R  : Cov k l m →  Cov  k        (suc l)  (suc m)
     B  : Cov k l m →  Cov  (suc k)  (suc l)  (suc m)
 
-data Term : ℕ → Set where
-    #       : Term 1
-    ƛ       : Term (suc n) → Term n
-    _$[_]_  : Term k → Cov k l m → Term l → Term m
+data Tm : ℕ → Set where
+    #       : Tm 1
+    ƛ       : Tm (suc n) → Tm n
+    _$[_]_  : Tm k → Cov k l m → Tm l → Tm m
     
 _ = ƛ (ƛ (ƛ ((# $[ L (R ⋅) ] #) $[ L (R (B ⋅)) ] (# $[ L (R ⋅) ] #))))
 \end{code}
