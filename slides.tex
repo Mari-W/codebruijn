@@ -376,12 +376,12 @@
     Let $\overline{Set}$ be the category of sets indexed by scopes with
     \begin{itemize}
       \item Objects: $T, S ∈ |\overline{Set}| = \bar{X} = X^* → Set $ and 
-      \item Morphisms: $f_⋅ ∈ \overline{Set}(T, S) = (\bar{x}∈X^*) → T(\bar{x}) → S(\bar{x}) = T \stackrel{⋅}{→} S$
+      \item Morphisms: $f_⋅ ∈ \overline{Set}(T, S) = (\bar{x}∈X^*) → T(\bar{x}) → S(\bar{x})$
     \end{itemize}
   \end{definition}
   \begin{definition}
     Let $\_⇑\_ : \bar{X} → \bar{X} = (T, \bar{x}) ↦ (T(\bar{s}) × \bar{s} ⊑ \bar{x})$ be the set of a terms together with a selection of its variables.
-    We write $t ↑ h$ for elements of  $T ⇑ \bar{x}$. 
+    We write $t ↑ \bar{b}$ for elements of  $T ⇑ \bar{x}$. 
     % \\We define $Ref : \overline{Set} \stackrel{⋅}{→} \overline{Set}$ to be the endofunctior induced by the mapping
     % \begin{itemize}
     %   \item $Ref(T) = (\bar{x} ↦ T ⇑ \bar{x}) ∈ \bar{X}$ for objects and
@@ -515,7 +515,7 @@
       \end{column}
       \begin{column}{0.3\textwidth}
         \begin{center}
-          \infer[\$]{
+          \infer[\_,_{[\_]}\_]{
             Tm \ n
           }{
             (Tm ×_R Tm) \ n
