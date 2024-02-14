@@ -478,22 +478,22 @@
           The variable terms could also be represented as
           \begin{itemize}
             \item $z' : Tm ⇑ 3 = \#0 ↑ 001$
-            \item $y' : Tm ⇑ 3 = \#1 ↑ 011$
+            \item $y' : Tm ⇑ 3 = \#0 ↑ 010$
           \end{itemize}
       \end{column}
       \begin{column}{0.44\textwidth}
           \adjustbox{scale=0.74}{
             \begin{tikzcd}
               001 \arrow[rrrrrd, "001"] \arrow[rrd, "01"'] &  &                         &  &  &     \\
-                                                           &  & ⟨ BR \arrow[rrr, "011"] &  &  & 111 \\
-              011 \arrow[rrrrru, "011"'] \arrow[rru, "11"] &  &                         &  &  &    
+                                                           &  & ⟨ RL \arrow[rrr, "011"] &  &  & 111 \\
+              010 \arrow[rrrrru, "010"'] \arrow[rru, "10"] &  &                         &  &  &    
               \end{tikzcd}
           }
       \end{column}
     \end{columns}
     And the application term could be a \emph{relevant pair} 
     \begin{itemize}
-     \item $z' ,_R y' : (Tm ×_R Tm) ⇑ 3 = (\#0 ↑ 01, \#1 ↑ 11, BR) ↑ 011$
+     \item $z' ,_R y' : (Tm ×_R Tm) ⇑ 3 = (\#0 ↑ 01, \#0 ↑ 10, RL) ↑ 011$
     \end{itemize}
   \end{example}
 \end{frame}

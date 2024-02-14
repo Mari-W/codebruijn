@@ -352,18 +352,18 @@ Given the scope $\bar{s}$ that we slice through, we now have objects that are pa
 \begin{example}
   Look at the term $λx. λy. λz. z \ y = λ λ λ(\#0 \ \#1)$ in De Bruijn notation. \\
   The variable terms could also be written as
-  $z' : Tm ⇑ 3 = \#0 ↑ 001$ and $y' : Tm ⇑ 3 = \#1 ↑ 011$.
+  $z' : Tm ⇑ 3 = \#0 ↑ 001$ and $y' : Tm ⇑ 3 = \#0 ↑ 010$.
   \begin{figure}[h]
     \centering
     \begin{tikzcd}
-      001 \arrow[rrrrrd, "001"] \arrow[rrd, "01"'] &  &                         &  &  & \\
-      &  & ⟨ BR \arrow[rrr, "011"] &  &  & 111 \\
-      011 \arrow[rrrrru, "011"'] \arrow[rru, "11"] &  &                         &  &  &
+      001 \arrow[rrrrrd, "001"] \arrow[rrd, "01"'] &  &                         &  &  &     \\
+                                                           &  & ⟨ RL \arrow[rrr, "011"] &  &  & 111 \\
+      010 \arrow[rrrrru, "010"'] \arrow[rru, "10"] &  &                         &  &  &    
     \end{tikzcd}
     \caption{Covering in the category $Δ_+^⊤∖3$.}
     \label{fig:ex6}
   \end{figure}
-  And the application term could be a \emph{relevant pair} $z' ,_R y' : (Tm ×_R Tm) ⇑ 3 = (\#0 ↑ 01, \#1 ↑ 11, BR) ↑ 011$
+  And the application term could be a \emph{relevant pair} $z' ,_R y' : (Tm ×_R Tm) ⇑ 3 = (\#0 ↑ 01, \#0 ↑ 10, RL) ↑ 011$
 \end{example}
 
 \subsection{Intrinsically Scoped co-De Bruijn Syntax}
